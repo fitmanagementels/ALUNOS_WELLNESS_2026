@@ -40,9 +40,9 @@
 
     <section class="grid" aria-label="Resumo rápido">
       <div class="card"><strong>Objetivo</strong><span>Gerir a agenda fixa semanal sem perder preenchimentos manuais.</span></div>
-      <div class="card"><strong>Etapa atual</strong><span>Organização do versionamento e backup em nuvem.</span></div>
-      <div class="card attention"><strong>Onde parei</strong><span>Preparando o primeiro backup completo desta pasta.</span></div>
-      <div class="card attention"><strong>Próxima ação</strong><span>Configurar/confirmar remoto, versionar e validar o commit no GitHub.</span></div>
+      <div class="card"><strong>Etapa atual</strong><span>Base funcional protegida por backup no GitHub.</span></div>
+      <div class="card attention"><strong>Onde parei</strong><span>Backup concluído e branch main sincronizada.</span></div>
+      <div class="card attention"><strong>Próxima ação</strong><span>Documentar instalação/deploy ou escolher a próxima evolução.</span></div>
     </section>
 
     <details open>
@@ -51,8 +51,8 @@
         <li>Aplicativo Google Apps Script ligado ao Sheets, com fluxo <code>Base -&gt; Dados -&gt; AGENDA</code>.</li>
         <li>Oferece mapa de calor, agenda, métricas de professores, busca e edição de até seis horários por aluno.</li>
         <li>A atualização deve sempre preservar status, horários e observações manuais pelo ID do aluno.</li>
-        <li><code>npm test</code> passou em 11/09/2026.</li>
-        <li class="warning">Antes do backup solicitado, quase todo o código estava fora do histórico e não havia remoto Git configurado.</li>
+        <li><code>npm test</code> passou em 11/09/2026 e todo o código adequado foi versionado.</li>
+        <li>O backup está em <code>fitmanagementels/ALUNOS_WELLNESS_2026</code>, branch <code>main</code>.</li>
         <li>Esta pasta é distinta de <code>../BASE_TECNOFIT</code>, que contém o dashboard principal e a funcionalidade de permanência.</li>
       </ul>
     </details>
@@ -65,11 +65,11 @@
     <details open class="attention">
       <summary>Estado atual, onde parei e como continuar</summary>
       <ul>
-        <li>Branch antes do backup: <code>master</code>; HEAD: <code>8d7ffcf</code>.</li>
-        <li>Somente três documentos de design estavam rastreados.</li>
-        <li><code>Appscript/</code>, testes e configurações estavam sem rastreamento.</li>
-        <li>Não havia remoto <code>origin</code> nem <code>.clasp.json</code>.</li>
-        <li>O inventário e o teste já foram concluídos; falta criar/confirmar o remoto, commitar, enviar e comparar o hash remoto.</li>
+        <li>Antes do backup, a branch era <code>master</code>, o HEAD era <code>8d7ffcf</code> e quase todo o app estava fora do histórico.</li>
+        <li>Agora a branch é <code>main</code> e acompanha <code>origin/main</code>.</li>
+        <li>O remoto é <code>git@github.com:fitmanagementels/ALUNOS_WELLNESS_2026.git</code>.</li>
+        <li>O ponto completo local foi criado em <code>99b23ec</code> e os históricos foram consolidados em <code>667d348</code>.</li>
+        <li>O código pode ser recuperado pelo GitHub; falta somente documentar e automatizar o deploy Apps Script.</li>
       </ul>
     </details>
 
@@ -82,6 +82,8 @@
           <tr><td><code>0511e8d</code></td><td>Especificação de Home e Configurações</td><td>Documento destinado ao dashboard de outro repositório</td></tr>
           <tr><td><code>8d7ffcf</code></td><td>Plano de perfis de alunos</td><td>Documento destinado ao <code>BASE_TECNOFIT</code></td></tr>
           <tr><td>11/09/2026</td><td>Contexto canônico atualizado</td><td>Preparação do backup completo no GitHub</td></tr>
+          <tr><td><code>99b23ec</code></td><td>Código e contexto versionados</td><td>Ponto completo de restauração local</td></tr>
+          <tr><td><code>667d348</code></td><td>Históricos consolidados e enviados</td><td>Backup completo em <code>origin/main</code></td></tr>
         </tbody>
       </table>
     </details>
@@ -139,7 +141,6 @@
     <details>
       <summary>Próximos passos</summary>
       <ol>
-        <li>Concluir e verificar o backup desta pasta no GitHub.</li>
         <li>Criar README de instalação, estrutura das abas, teste e publicação.</li>
         <li>Configurar o vínculo <code>clasp</code> sem expor credenciais.</li>
         <li>Ampliar testes do backend e contratos essenciais da interface.</li>
@@ -153,14 +154,14 @@
         <li>Risco de aplicar nesta pasta planos que pertencem ao <code>BASE_TECNOFIT</code>.</li>
         <li>Risco principal de regressão: apagar dados manuais ao atualizar <code>AGENDA</code>.</li>
         <li>Não versionar dados pessoais, planilhas reais, credenciais ou artefatos temporários.</li>
-        <li>Faltam vínculo Apps Script, documentação de implantação e testes além do núcleo.</li>
+        <li>Não há bloqueio para recuperar o código; faltam vínculo Apps Script, documentação de implantação e testes além do núcleo.</li>
         <li>A implantação Apps Script, sua URL e a planilha de produção desta versão não estão documentadas.</li>
       </ul>
     </details>
 
     <details open class="attention">
       <summary>Contexto para outro chat ou IA</summary>
-      <p><strong>Objetivo:</strong> manter uma Gestão de Agenda em Apps Script/Sheets sem perder preenchimentos manuais. <strong>Leia:</strong> este contexto, <code>Code.gs</code>, <code>AgendaCore.gs</code>, <code>Script.html</code> e o teste. <strong>Não desfaça:</strong> preservação por ID, regras puras testáveis e separação do dashboard <code>BASE_TECNOFIT</code>. <strong>Próxima ação:</strong> verificar Git/remote e seguir o primeiro item pendente. <strong>Confirme antes de agir:</strong> URL/ID Apps Script, planilha de produção e decisão de integração.</p>
+      <p><strong>Objetivo:</strong> manter uma Gestão de Agenda em Apps Script/Sheets sem perder preenchimentos manuais. <strong>Estado:</strong> teste aprovado e backup em <code>fitmanagementels/ALUNOS_WELLNESS_2026</code>, branch <code>main</code>. <strong>Leia:</strong> este contexto, <code>Code.gs</code>, <code>AgendaCore.gs</code>, <code>Script.html</code> e o teste. <strong>Não desfaça:</strong> preservação por ID, regras puras testáveis e separação do dashboard <code>BASE_TECNOFIT</code>. <strong>Próxima ação:</strong> documentar o deploy ou escolher a próxima evolução. <strong>Confirme antes de agir:</strong> URL/ID Apps Script, planilha de produção e decisão de integração.</p>
     </details>
   </main>
 </body>

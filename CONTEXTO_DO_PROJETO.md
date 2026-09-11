@@ -8,8 +8,8 @@
 - O fluxo operacional transforma `Base -> Dados -> AGENDA`, preservando por ID os campos manuais de status, professor, dia, horário e observações.
 - O aplicativo já oferece mapa de calor, agenda por dia/professor, métricas de professores, busca de alunos e edição de até seis horários por aluno.
 - A regra central testada é: atualizar a base ou a agenda não pode apagar as informações manuais de um aluno já existente.
-- Em 11/09/2026, `npm test` passou, mas quase todo o código ainda estava fora do histórico Git; somente três documentos de design estavam versionados.
-- Esta pasta não possuía remoto Git configurado. Portanto, antes do backup solicitado, ela **não estava salva no GitHub**.
+- Em 11/09/2026, `npm test` passou e o código, os testes, os planos e este contexto foram versionados.
+- O backup foi conectado a `git@github.com:fitmanagementels/ALUNOS_WELLNESS_2026.git` e enviado para a branch `main`.
 - Este projeto não deve ser confundido com o repositório irmão `../BASE_TECNOFIT`, que contém o dashboard Home/Financeiro/Acompanhamento/Fluxo/Configurações e a funcionalidade de permanência.
 
 ## Objetivo do projeto
@@ -21,12 +21,12 @@
 
 ## Estado atual
 
-- **Etapa atual:** base funcional da Gestão de Agenda concluída; organização do versionamento e backup em nuvem em andamento.
-- **Status geral:** funcional localmente e com teste do núcleo aprovado; implantação remota Apps Script não está configurada nesta pasta.
-- **Última ação relevante:** auditoria do conteúdo local, execução de `npm test` e atualização deste pacote de contexto.
+- **Etapa atual:** base funcional da Gestão de Agenda concluída e protegida por backup no GitHub.
+- **Status geral:** funcional localmente, teste do núcleo aprovado e branch `main` sincronizada; implantação remota Apps Script não está configurada nesta pasta.
+- **Última ação relevante:** histórico local consolidado com o repositório remoto e primeiro backup completo enviado ao GitHub.
 - **Próxima decisão necessária:** definir depois se a Gestão de Agenda continuará como produto separado ou será integrada ao dashboard do repositório `BASE_TECNOFIT`.
-- **Onde parei:** preparando o primeiro backup completo do código atual no GitHub.
-- **O que falta para continuar:** configurar/confirmar o remoto, versionar os arquivos adequados e verificar que o commit remoto corresponde ao local.
+- **Onde parei:** backup concluído; a próxima evolução técnica pode começar a partir da branch `main`.
+- **O que falta para continuar:** escolher a próxima evolução do produto; a recomendação é documentar instalação/deploy e configurar `clasp`.
 
 ## Fatos observados no repositório
 
@@ -38,6 +38,7 @@
 - Não havia `origin` nem outro remoto configurado.
 - Não há `.clasp.json`; a associação desta pasta com um projeto Apps Script remoto não está registrada.
 - Não há `README.md` de instalação e implantação.
+- Depois da auditoria, o remoto `origin` foi configurado para `fitmanagementels/ALUNOS_WELLNESS_2026` e a branch local foi renomeada de `master` para `main`.
 
 ## Histórico relevante
 
@@ -47,6 +48,8 @@
 | `0511e8d` | Especificação de Home e Configurações operacionais | Registrou decisões para o dashboard de outro repositório |
 | `8d7ffcf` | Especificação e plano de perfis de alunos | Documentou uma evolução destinada ao repositório `BASE_TECNOFIT` |
 | 11/09/2026 | Contexto canônico atualizado e teste executado | Preparou o projeto para versionamento completo e backup no GitHub |
+| `99b23ec` | Código, testes, planos e contexto entraram no histórico | Criou um ponto local completo de restauração |
+| `667d348` | Históricos local e remoto foram consolidados e enviados | Tornou `origin/main` um backup completo do estado atual |
 
 ## Decisões tomadas
 
@@ -78,10 +81,10 @@
 
 ## Etapa atual em desenvolvimento
 
-- **O que está sendo feito:** criação de um ponto seguro de restauração no GitHub para o código atual desta pasta.
+- **O que está sendo feito:** nenhuma implementação funcional está ativa; o ciclo atual foi encerrado com o backup em nuvem.
 - **Arquivos envolvidos:** código em `Appscript/`, testes, configuração do Node, documentação e arquivos canônicos de contexto.
-- **O que já está pronto:** inventário do repositório, identificação da ausência de remoto, teste do núcleo aprovado e contexto atualizado.
-- **O que ainda falta:** confirmar/criar o repositório remoto, adicionar apenas arquivos apropriados, fazer commit/push e validar o hash remoto.
+- **O que já está pronto:** inventário, teste, contexto canônico, remoto configurado, históricos consolidados e envio para `origin/main`.
+- **O que ainda falta:** documentação de implantação e vínculo com Apps Script; não são necessários para recuperar o código pelo GitHub.
 - **Cuidado ao continuar:** não versionar dados pessoais, credenciais, tokens, arquivos de planilha com dados reais nem artefatos temporários de `.superpowers/`.
 
 ## Arquitetura e fluxo de dados
@@ -116,11 +119,10 @@ Regras importantes:
 
 ## Próximos passos
 
-1. Concluir o backup desta pasta no GitHub e verificar o commit remoto.
-2. Adicionar um `README.md` com instalação, abas necessárias, teste e publicação Apps Script.
-3. Criar/configurar `.clasp.json` com cuidado para não expor credenciais e registrar o fluxo de deploy.
-4. Ampliar os testes para `Code.gs` e para os contratos essenciais da interface.
-5. Decidir se a Gestão de Agenda será mantida separada ou incorporada ao dashboard `BASE_TECNOFIT`.
+1. Adicionar um `README.md` com instalação, abas necessárias, teste e publicação Apps Script.
+2. Criar/configurar `.clasp.json` com cuidado para não expor credenciais e registrar o fluxo de deploy.
+3. Ampliar os testes para `Code.gs` e para os contratos essenciais da interface.
+4. Decidir se a Gestão de Agenda será mantida separada ou incorporada ao dashboard `BASE_TECNOFIT`.
 
 ## Arquivos e pastas importantes
 
@@ -142,7 +144,7 @@ Regras importantes:
 - **Risco:** confundir esta Gestão de Agenda com o dashboard do repositório irmão e implementar planos no código errado.
 - **Risco:** atualizar `AGENDA` sem preservar colunas manuais; esta é a principal regressão a evitar.
 - **Risco:** dados reais de alunos ou credenciais serem adicionados ao Git; revisar sempre os arquivos antes do commit.
-- **Bloqueio atual:** não existe configuração local de remoto Git nem vínculo `clasp` nesta pasta.
+- **Bloqueio atual:** nenhum bloqueio para recuperar ou continuar o código; falta apenas o vínculo `clasp` para automatizar a implantação Apps Script.
 - **Pendência:** cobertura automatizada restrita ao `AgendaCore.gs`.
 - **Pendência:** navegação lateral de Professores, Performance e Operação é apenas visual.
 - **Pendência:** capacidade do mapa de calor fixa em 10 e pequenas diferenças de limites de turno entre núcleo e frontend.
@@ -161,8 +163,8 @@ Regras importantes:
 Cole ou anexe este resumo ao continuar em outra máquina, conta ou IA:
 
 - **Objetivo essencial:** manter uma Gestão de Agenda fixa semanal em Apps Script, alimentada por Sheets, sem perder dados manuais nas atualizações.
-- **Estado atual:** aplicativo local funcional; teste do núcleo aprovado em 11/09/2026; backup GitHub sendo configurado.
+- **Estado atual:** aplicativo local funcional; teste do núcleo aprovado em 11/09/2026; backup disponível em `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main`.
 - **Arquivos que precisam ser lidos:** `CONTEXTO_DO_PROJETO.md`, `Appscript/Code.gs`, `Appscript/AgendaCore.gs`, `Appscript/Script.html` e `tests/agendaCore.test.js`.
 - **Decisões que não devem ser desfeitas:** preservar campos manuais por ID; manter regras puras testáveis; não misturar automaticamente este código com o dashboard `BASE_TECNOFIT`.
-- **Próxima ação:** verificar o estado Git/remote e continuar pelo primeiro item pendente registrado acima.
+- **Próxima ação:** criar a documentação de instalação/deploy ou escolher a próxima evolução funcional.
 - **Lacunas a confirmar:** URL/ID do Apps Script, planilha de produção correspondente e decisão futura de integração com o dashboard principal.
