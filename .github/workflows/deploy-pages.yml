@@ -36,20 +36,34 @@ jobs:
           node <<'NODE'
           (async function () {
             const workerUrl = String(process.env.PUBLIC_WORKER_URL || '').replace(/\/$/, '');
-            const response = await fetch(workerUrl + '/api', {
-              method: 'POST',
-              headers: {
-                'content-type': 'application/json',
-                origin: 'https://fitmanagementels.github.io'
-              },
-              body: JSON.stringify({ action: 'versao', payload: {} })
-            });
-            const result = await response.json();
-            if (!response.ok || !result || result.ok !== true || !result.data ||
-                !result.data.capacidades || result.data.capacidades.perfilAluno !== true) {
-              throw new Error('A API publicada não confirma suporte ao salvamento de perfis de alunos.');
+            let lastError;
+            for (let attempt = 1; attempt <= 3; attempt += 1) {
+              try {
+                const response = await fetch(workerUrl + '/api', {
+                  method: 'POST',
+                  headers: {
+                    'content-type': 'application/json',
+                    origin: 'https://fitmanagementels.github.io'
+                  },
+                  body: JSON.stringify({ action: 'versao', payload: {} }),
+                  signal: AbortSignal.timeout(60000)
+                });
+                const result = await response.json();
+                if (!response.ok || !result || result.ok !== true || !result.data ||
+                    !result.data.capacidades || result.data.capacidades.perfilAluno !== true) {
+                  throw new Error('A API publicada não confirma suporte ao salvamento de perfis de alunos.');
+                }
+                console.log('API de perfis de alunos compatível.');
+                return;
+              } catch (error) {
+                lastError = error;
+                console.warn('Tentativa ' + attempt + ' de 3 falhou: ' + error.message);
+                if (attempt < 3) {
+                  await new Promise(resolve => setTimeout(resolve, 5000 * attempt));
+                }
+              }
             }
-            console.log('API de perfis de alunos compatível.');
+            throw lastError;
           }()).catch(function (error) {
             console.error(error.message);
             process.exit(1);

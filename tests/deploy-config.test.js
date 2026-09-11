@@ -38,6 +38,9 @@ test('workflows publicam Pages e Worker sem OAuth público', () => {
   assert.doesNotMatch(gas, /ready=false/);
   assert.match(pages, /capacidades\.perfilAluno !== true/);
   assert.match(pages, /action:\s*'versao'/);
+  assert.match(pages, /for \(let attempt = 1; attempt <= 3; attempt \+= 1\)/);
+  assert.match(pages, /AbortSignal\.timeout\(60000\)/);
+  assert.match(pages, /setTimeout\(resolve, 5000 \* attempt\)/);
   assert.match(gas, /steps\.config\.outputs\.ready == 'true'/);
   assert.match(gas, /Verificar API pública/);
   assert.match(gas, /action:\s*'versao'/);
