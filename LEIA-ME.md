@@ -2,18 +2,19 @@
 
 Documento de configuração, organização e uso da base central de alunos e contratos.
 
-- Versão do documento: 1.0
-- Data de referência: 10/07/2026
+- Versão do documento: 2.0
+- Data de referência: 11/09/2026
 - Fuso horário do projeto: `America/Fortaleza`
 - Formato de exibição das datas: `dd/MM/yyyy`
 
 ## 1. Objetivo
 
-Este projeto consolida três relatórios exportados pelo sistema TecnoFit em uma base central no Google Sheets:
+Este projeto consolida quatro relatórios exportados pelo sistema TecnoFit em uma base central no Google Sheets:
 
 - `vencimentos`: fonte principal dos alunos e contratos;
 - `fichas`: fonte dos contatos e das datas das fichas;
 - `avaliacao_fisica`: fonte das datas das avaliações físicas.
+- `permanencia`: fonte da primeira entrada conhecida do cliente e do histórico de permanência.
 
 A base central é a fonte do dashboard implementado em Google Apps Script. O processo deve ser repetível, auditável e seguro: um arquivo semanal inválido não pode apagar ou corromper a última base válida.
 
@@ -68,6 +69,8 @@ Manter exatamente estes nomes:
 BASE_ALUNOS
 CONTRATOS
 VISAO_MESTRE
+BASE_PERMANENCIA
+HISTORICO_PERMANENCIA
 IMPORTACOES
 ```
 
@@ -83,7 +86,7 @@ Contém uma linha por aluno. O campo `id` é único nesta aba.
 | `aluno` | Nome obtido de `vencimentos` |
 | `contato` | Coluna L de `fichas` |
 | `status` | Status do cliente obtido de `vencimentos` |
-| `inicio_plano` | Mantido vazio nesta primeira versão |
+| `inicio_plano` | Primeira entrada conhecida obtida de `permanencia` |
 | `data_ficha` | Coluna D de `fichas` |
 | `data_avaliacao` | Coluna C de `avaliacao_fisica` |
 | `importacao_id` | Identificador da execução que atualizou a linha |
@@ -180,16 +183,16 @@ A coluna M de `VISAO_MESTRE` deve ficar oculta e protegida contra edição manua
 
 ### 3.5 `IMPORTACOES`
 
-É o registro de auditoria das execuções. Ela não recebe cópias integrais dos três relatórios.
+É o registro de auditoria das execuções. Ela não recebe cópias integrais dos quatro relatórios.
 
 Cada arquivo processado ocupa uma linha:
 
 | Campo | Descrição |
 |---|---|
-| `execucao_id` | Identificador compartilhado pelos três arquivos do lote |
+| `execucao_id` | Identificador compartilhado pelos quatro arquivos do lote |
 | `data_hora_inicio` | Início do processamento |
 | `data_hora_fim` | Término do processamento |
-| `tipo_arquivo` | `vencimentos`, `fichas` ou `avaliacao_fisica` |
+| `tipo_arquivo` | `vencimentos`, `fichas`, `avaliacao_fisica` ou `permanencia` |
 | `nome_arquivo` | Nome recebido no Drive |
 | `drive_file_id` | Identificador do arquivo no Google Drive |
 | `data_referencia` | Data declarada no nome do arquivo |
@@ -200,16 +203,17 @@ Cada arquivo processado ocupa uma linha:
 | `status` | `PROCESSANDO`, `SUCESSO` ou `ERRO` |
 | `mensagem` | Resumo do resultado ou motivo do erro |
 
-Os três registros de uma atualização semanal usam o mesmo `execucao_id`.
+Os quatro registros de uma atualização semanal usam o mesmo `execucao_id`.
 
 ## 4. Nomes dos arquivos semanais
 
-Cada atualização deve conter os três arquivos:
+Cada atualização deve conter os quatro arquivos:
 
 ```text
 vencimentos_AAAA-MM-DD_rNN.xls
 fichas_AAAA-MM-DD_rNN.xls
 avaliacao_fisica_AAAA-MM-DD_rNN.xls
+permanencia_AAAA-MM-DD_rNN.xls
 ```
 
 Também são aceitos arquivos com a extensão `.xlsx`:
@@ -218,6 +222,7 @@ Também são aceitos arquivos com a extensão `.xlsx`:
 vencimentos_AAAA-MM-DD_rNN.xlsx
 fichas_AAAA-MM-DD_rNN.xlsx
 avaliacao_fisica_AAAA-MM-DD_rNN.xlsx
+permanencia_AAAA-MM-DD_rNN.xlsx
 ```
 
 Exemplo:
@@ -226,6 +231,7 @@ Exemplo:
 vencimentos_2026-07-10_r01.xls
 fichas_2026-07-10_r01.xls
 avaliacao_fisica_2026-07-10_r01.xls
+permanencia_2026-07-10_r01.xls
 ```
 
 Regras recomendadas para quem prepara os arquivos:
@@ -234,7 +240,8 @@ Regras recomendadas para quem prepara os arquivos:
 - não usar espaços ou acentos;
 - usar a data de exportação no formato `AAAA-MM-DD`;
 - usar revisão com dois dígitos: `r01`, `r02`, `r03`;
-- os três arquivos do lote devem ter a mesma data e revisão;
+- os quatro arquivos do lote devem ter a mesma data e revisão;
+- a exportação de permanência deve ser completa, sem filtro de status;
 - não usar nomes como `novo`, `final`, `final2`, `corrigido` ou `atualizado`.
 
 O backend aceita, na entrada, datas separadas por hífen ou sublinhado e as extensões `.xls` ou `.xlsx`. Por exemplo, `fichas_2026-07-08_r01.xls`, `fichas_2026_07_08_r01.xls` e `fichas_2026-07-08_r01.xlsx` são reconhecidos. Ao arquivar o lote, o backend normaliza o nome para o padrão com hífens e corrige a extensão quando ela não corresponder ao conteúdo real do arquivo.
@@ -249,6 +256,7 @@ Exemplo:
 vencimentos_2026-07-10_r02.xls
 fichas_2026-07-10_r02.xls
 avaliacao_fisica_2026-07-10_r02.xls
+permanencia_2026-07-10_r02.xls
 ```
 
 Não misturar `r01` e `r02` no mesmo lote.
@@ -296,11 +304,11 @@ Usar os identificadores do Google Drive, e não apenas os nomes ou caminhos das 
 
 ### 7.1 Responsável pelo envio
 
-1. Exportar os três relatórios no mesmo período.
+1. Exportar os quatro relatórios no mesmo período.
 2. Confirmar que pertencem à mesma data de referência.
 3. Renomeá-los conforme o padrão do projeto.
 4. Confirmar que usam a mesma revisão.
-5. Colocar exatamente os três arquivos em `01_ENTRADA`.
+5. Colocar exatamente os quatro arquivos em `01_ENTRADA`.
 6. Informar ao responsável pela atualização que o lote está disponível.
 
 ### 7.2 Responsável pela atualização
@@ -309,13 +317,13 @@ Usar os identificadores do Google Drive, e não apenas os nomes ou caminhos das 
 2. Abrir `TecnoFit > Abrir painel` e clicar em `Atualizar base`.
 3. Aguardar o término sem editar as abas de dados.
 4. Conferir `IMPORTACOES`.
-5. Confirmar três registros com status `SUCESSO` e o mesmo `execucao_id`.
+5. Confirmar quatro registros com status `SUCESSO` e o mesmo `execucao_id`.
 6. Conferir a data da última atualização exibida na planilha ou no dashboard.
 7. Fazer uma verificação rápida da quantidade de alunos, contratos e valores.
 
 ## 8. Fluxo previsto da automação
 
-1. Localizar em `01_ENTRADA` os três arquivos com a mesma data e revisão.
+1. Localizar em `01_ENTRADA` os quatro arquivos com a mesma data e revisão.
 2. Confirmar que o lote ainda não foi processado.
 3. Validar os nomes e os cabeçalhos esperados.
 4. Ler e normalizar IDs, textos, datas e valores.
@@ -327,7 +335,7 @@ Usar os identificadores do Google Drive, e não apenas os nomes ou caminhos das 
 10. Registrar os resultados em `IMPORTACOES`.
 11. Mover o lote para `02_PROCESSADOS/AAAA/AAAA-MM-DD`.
 
-A atualização deve funcionar como uma operação única: se um dos três arquivos falhar, nenhuma aba definitiva será substituída.
+A atualização deve funcionar como uma operação única: se um dos quatro arquivos falhar, nenhuma aba definitiva será substituída.
 
 ## 9. Tratamento de erros
 
@@ -338,11 +346,11 @@ Se um lote for inválido:
 3. informar na coluna `mensagem` o motivo encontrado;
 4. mover o conjunto para `03_REJEITADOS/AAAA/AAAA-MM-DD`;
 5. corrigir a origem do problema;
-6. enviar os três arquivos novamente com uma revisão maior.
+6. enviar os quatro arquivos novamente com uma revisão maior.
 
 Erros que devem impedir a atualização:
 
-- ausência de um dos três arquivos;
+- ausência de um dos quatro arquivos;
 - datas ou revisões diferentes dentro do lote;
 - cabeçalhos obrigatórios ausentes ou alterados;
 - arquivo vazio ou ilegível;
@@ -365,19 +373,20 @@ Não compartilhar publicamente os relatórios, pois eles contêm dados pessoais.
 
 ## 11. Checklist antes de cada atualização
 
-- [ ] Existem exatamente três arquivos em `01_ENTRADA`.
+- [ ] Existem exatamente quatro arquivos em `01_ENTRADA`.
 - [ ] Os nomes seguem o padrão definido.
-- [ ] Os três arquivos possuem a mesma data.
-- [ ] Os três arquivos possuem a mesma revisão.
+- [ ] Os quatro arquivos possuem a mesma data.
+- [ ] Os quatro arquivos possuem a mesma revisão.
+- [ ] O relatório de permanência foi exportado sem filtro de status.
 - [ ] Nenhum arquivo foi convertido ou editado manualmente.
 - [ ] Não existem arquivos de lotes antigos misturados na entrada.
 - [ ] A última base válida continua disponível.
 
 ## 12. Checklist depois de cada atualização
 
-- [ ] Há três registros do lote em `IMPORTACOES`.
-- [ ] Os três registros têm o mesmo `execucao_id`.
-- [ ] Os três registros apresentam status `SUCESSO`.
+- [ ] Há quatro registros do lote em `IMPORTACOES`.
+- [ ] Os quatro registros têm o mesmo `execucao_id`.
+- [ ] Os quatro registros apresentam status `SUCESSO`.
 - [ ] Os arquivos foram movidos para `02_PROCESSADOS`.
 - [ ] A quantidade de alunos é plausível.
 - [ ] A quantidade de contratos é igual ou maior que a de alunos.
@@ -395,11 +404,11 @@ Não compartilhar publicamente os relatórios, pois eles contêm dados pessoais.
 
 ## 14. Situação atual do projeto
 
-O código-fonte da automação manual do Google Apps Script está disponível em `apps-script/`, acompanhado por testes e instruções de instalação. O backend ainda precisa ser copiado para o editor Apps Script vinculado à planilha e autorizado pela conta proprietária antes da primeira importação real.
+O projeto completo está versionado no repositório canônico `fitmanagementels/ALUNOS_WELLNESS_2026`. O backend Apps Script, o Worker público e o PWA já possuem implantação operacional conhecida; o endereço anterior permanece ativo durante a migração do GitHub Pages para o novo repositório.
 
-O dashboard de gestão está implementado localmente em `apps-script/`, incluindo métricas, páginas, repositório, API e os quatro arquivos HTML da interface. Os testes automatizados locais estão passando. A implantação externa não foi realizada nesta etapa: ainda é necessário copiar o código para o projeto Apps Script vinculado à planilha, publicar o aplicativo da web com acesso restrito aos usuários autorizados e verificar visualmente a URL `/exec` em desktop, tablet e celular.
+O PWA é a interface única e fica em `pwa/`. O Apps Script fica em `apps-script/` e o Worker em `worker/`. Em 11/09/2026, a suíte local passou com 200 testes e nenhuma falha. A carga inicial de permanência e sua associação por ID já foram validadas.
 
-A validação operacional com dados reais também permanece pendente. Ela só deve ser executada quando os três exports semanais autorizados estiverem disponíveis em uma pasta temporária, sem copiar dados de alunos para o repositório ou para relatórios. Até a implantação e essas verificações serem concluídas, o dashboard deve ser tratado como implementado e verificado por testes locais, mas ainda não homologado no ambiente real. Gatilhos agendados e atualizações automáticas permanecem fora da fase atual. Não substituir manualmente as abas definitivas.
+Não copiar dados reais para o repositório. A rotina semanal usa os quatro exports originais na pasta `01_ENTRADA`; não substituir manualmente as abas definitivas.
 
 ## 15. Arquivos do backend
 

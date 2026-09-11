@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   deploy:
+    if: ${{ vars.ENABLE_APPS_SCRIPT_DEPLOY == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Verificar configuração do deploy

@@ -1,127 +1,183 @@
-# Contexto do Projeto — Base Central TecnoFit / XSTEAM
+# Contexto do Projeto — Base Central TecnoFit / PWA XSTEAM
 
-Última atualização: **21/08/2026 — America/Fortaleza (UTC−03:00)**
+Última atualização: **11/09/2026 16:31 — America/Fortaleza (UTC−03:00)**
 
-> Memória portátil canônica. Atualizar junto com `CONTEXTO_DO_PROJETO.html` ao encerrar cada marco relevante. Não incluir arquivos fonte com dados pessoais.
+> Memória portátil canônica. Este repositório não deve conter planilhas reais, contatos, tokens, secrets ou credenciais.
 
 ## Resumo executivo
 
-- A Base Central TecnoFit alimenta um PWA operacional XSTEAM para Wellness, publicado no GitHub Pages e conectado ao Google Apps Script por Worker público autenticado por segredo de servidor.
-- A interface única fica em `pwa/`; Apps Script contém importação, planilha, API interna e persistência. O PWA tem Home, Financeiro, Acompanhamento, Fluxo e Configurações.
-- Perfis de alunos na Home são persistentes, começam recolhidos, preservam seu estado durante o uso e fecham o modal imediatamente após salvar, mantendo a fila de gravação em segundo plano.
-- O perfil registra responsável, múltiplos últimos professores, pagamento, etiquetas e observações. As novas etiquetas públicas/comerciais são `Performance` e `Coach`.
-- Fluxo possui Leads e Churns em abas manuais persistentes. Churn já tem análise mensal/semanal, diagnósticos e detalhamento, mas sua lista precisa de uma reorganização para escalar.
-- A próxima etapa é um pacote de evolução de Fluxo: histórico oficial de cancelamentos, subaba de alunos novos, acesso de perfil por ID nos churns, organização das listas, ordenação comum e análise temporal de Leads.
+- `fitmanagementels/ALUNOS_WELLNESS_2026` é, por decisão do usuário, o repositório canônico do projeto completo e do PWA XSTEAM.
+- O histórico e a árvore funcional de `BASE_TECNOFIT_WELLNESS` no commit `bc378e7` foram incorporados ao destino, preservando todo o histórico Git.
+- A solução consolida quatro relatórios TecnoFit: vencimentos, fichas/prescrições, avaliações físicas e permanência.
+- O PWA contém Home, Financeiro, Acompanhamento, Fluxo e Configurações; a fonte única da interface é `pwa/`.
+- A arquitetura pública é `GitHub Pages -> Cloudflare Worker -> Apps Script Web App -> Google Sheets`.
+- Home mantém fichas/prescrições e avaliações em filas independentes; Financeiro possui a subaba Permanência.
+- Permanência exibe tempo de empresa e pacote atual separadamente. Não estima LTV ou receita histórica multiplicando o plano atual.
+- A suíte completa passou em 11/09/2026: **200 testes aprovados e nenhuma falha**.
+- O estado anterior da antiga Gestão de Agenda permanece recuperável pela tag `agenda-legacy-2026-09-11`.
 
 ## Objetivo do projeto
 
-- Manter a base operacional semanal importável e segura, sem apagar registros manuais de operação.
-- Dar à equipe uma visão diária de alunos, planos, vencimentos, prescrição, avaliação, leads e churns.
-- Permitir registros persistentes associados ao ID do aluno, com uso contínuo do PWA e baixo atrito.
-- Usuários: gestão e equipe operacional autorizada da XSTEAM Wellness Club.
+- **Objetivo principal:** manter uma base confiável de alunos e contratos e transformar esses dados em decisões diárias para a equipe XSTEAM Wellness Club.
+- **Resultado esperado:** importação semanal segura, rastreável e reversível; PWA responsivo; dados manuais persistentes; publicação reproduzível.
+- **Usuários:** gestão e equipe operacional autorizada da XSTEAM.
+- **Critérios de sucesso:** lote válido substitui a base atomicamente; lote inválido preserva a última base; filas não misturam processos; mutações persistem; PWA e backend mantêm contrato compatível; testes passam antes de publicar.
 
 ## Estado atual
 
 | Item | Situação observada |
 |---|---|
-| Branch e publicação | `main` publicado no GitHub em `6ad602f`; GitHub Pages confirmou deploy com sucesso. |
-| PWA | Cache publicado `xsteam-static-v10`; o PWA instalado recebe o novo perfil após recarregar/reativar. |
-| Apps Script | Backend enviado e implantação pública estável atualizada para versão 33. |
-| Testes | `npm test`: 176 aprovados, 0 falhas. |
-| Onde parei | Implementação de Último professor e etiquetas concluída; próximos requisitos de Fluxo foram registrados, ainda sem design/implementação. |
-| Arquivos locais | Há itens não rastreados que pertencem ao usuário (`.vscode/`, export de cancelados e feedback comercial). Preservar. |
+| Repositório canônico | `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main` |
+| Fonte migrada | `fitmanagementels/BASE_TECNOFIT_WELLNESS`, commit `bc378e7` |
+| Migração local | Commit `c24d950`, a enviar ao remoto no encerramento deste marco |
+| Testes | `npm test`: 200 aprovados, 0 falhas |
+| PWA | Código completo em `pwa/`; cache `xsteam-static-v11` |
+| Novo endereço esperado | `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/` |
+| Endereço anterior | `https://fitmanagementels.github.io/BASE_TECNOFIT_WELLNESS/`, mantido como redundância |
+| Backend | Worker e Apps Script existentes continuam usados; último deploy Apps Script conhecido: versão 38 |
+| Onde parei | Contexto consolidado; falta enviar ao GitHub e confirmar Pages no novo repositório |
+
+## Arquitetura
+
+```text
+Relatórios TecnoFit no Drive -> Google Apps Script -> Google Sheets
+                                      ^
+                                      |
+GitHub Pages / PWA -> Cloudflare Worker
+```
+
+- `apps-script/`: importação, transformação, planilha, métricas, mutações e APIs.
+- `worker/`: proxy público com CORS e segredo somente no servidor.
+- `pwa/`: interface única, service worker, manifesto e módulos de UI.
+- `.github/workflows/`: publicação independente do PWA, Worker e Apps Script.
+- `tests/`: contratos de dados, segurança, importação, UI e implantação.
+
+## Dados e rotina de importação
+
+O lote semanal exige exatamente quatro arquivos com a mesma data e revisão:
+
+```text
+vencimentos_AAAA-MM-DD_rNN.xls
+fichas_AAAA-MM-DD_rNN.xls
+avaliacao_fisica_AAAA-MM-DD_rNN.xls
+permanencia_AAAA-MM-DD_rNN.xls
+```
+
+Também são aceitos arquivos `.xlsx`. Devem ser exportados completos e colocados sem edição manual em `01_ENTRADA`. Permanência não deve ser filtrada por status, pois também alimenta o histórico.
+
+Principais abas: `BASE_ALUNOS`, `CONTRATOS`, `VISAO_MESTRE`, `BASE_PERMANENCIA`, `HISTORICO_PERMANENCIA`, `IMPORTACOES`, `PERFIS_ALUNOS`, `CONFIG_PERFIS_ALUNOS`, `FLUXO_LEADS` e `FLUXO_CHURNS`.
+
+Na carga inicial validada de permanência foram processados 980 registros; 314 IDs foram ligados ao recorte operacional, 666 permaneceram somente no histórico e 2 alunos operacionais estavam sem início conhecido. São números de referência histórica e mudam com novas importações.
+
+## Funcionalidades atuais
+
+- **Home:** filtro inicial Matriculados/Wellness, filas independentes, perfis persistentes, etiquetas, responsáveis, WhatsApp e salvamento otimista.
+- **Financeiro:** vencimentos, planos e Permanência; tempo de empresa e pacote atual separados, sem LTV estimado.
+- **Acompanhamento:** listas dedicadas a fichas e avaliações, sem informação financeira desnecessária.
+- **Fluxo:** Leads e Churns persistentes, métricas mensais/semanais e diagnósticos.
+- **Configurações:** limites independentes, ordem dos blocos da Home e catálogos de perfil.
 
 ## Histórico relevante
 
 | Data/commit | Mudança | Impacto |
 |---|---|---|
-| Jul–Ago/2026 | Importador, snapshots e PWA operacional | Base, contratos, métricas e navegação diária estruturados. |
-| `c09142d`–`f70cf86` | Perfil do aluno, WhatsApp e fluxo contínuo de salvamento | Perfil na Home, lista retrátil e operação sem aguardar modal. |
-| `3e43bee` | Persistência de últimos professores e catálogo | Nova coluna segura, compatível com perfis antigos; `Performance` e `Coach`. |
-| `d4c1c8f` | Seletor múltiplo no PWA | Um único campo compacto para zero ou vários últimos professores. |
-| `6ad602f` | Cache PWA, testes e publicação | Service worker `v10`, Pages publicado e backend em Apps Script versão 33. |
+| Jul–Ago/2026 | Importador, snapshots, dashboard e PWA | Base operacional e navegação diária estruturadas |
+| `c09142d`–`6ad602f` | Perfis, WhatsApp e salvamento contínuo | Dados manuais persistentes e baixo atrito |
+| `953e616` | Integração de permanência | Quarto relatório, histórico e nova visão financeira |
+| `bc378e7` | Estado completo da fonte | PWA v11, Apps Script conhecido em versão 38 e executor privado |
+| `55688d7` | Backup da antiga Gestão de Agenda | Estado preservado também pela tag de restauração |
+| `c24d950` | Projeto e histórico migrados | Código, documentação e PWA reunidos no canônico |
 
 ## Decisões tomadas
 
-| Decisão | Por que foi tomada | Onde impacta | Como verificar/retomar |
+- `ALUNOS_WELLNESS_2026` é o repositório canônico; `BASE_TECNOFIT_WELLNESS` permanece temporariamente como redundância.
+- `pwa/` é a única fonte da interface; não recriar dashboard paralelo no Apps Script.
+- Fichas e avaliações nunca compartilham fila, limites ou classificação.
+- Permanência usa a primeira entrada confiável e preserva histórico; ausência não apaga informação antiga.
+- Tempo de empresa e pacote atual permanecem separados; não inferir receita passada pelo preço atual.
+- Perfis, Leads e Churns são persistentes e não podem ser apagados por importações semanais.
+- O Worker guarda o segredo; o PWA recebe somente sua URL pública.
+- O projeto antigo de Agenda saiu da árvore atual, mas permanece recuperável por tag.
+
+## Memória de decisões e justificativas
+
+| Decisão | Por que | Onde impacta | Como verificar/retomar |
 |---|---|---|---|
-| PWA é a interface única | Evita divergência com HTML do Apps Script. | `pwa/`, Pages. | Alterar e publicar somente a fonte em `pwa/`. |
-| Gravações são otimistas | Mantém fluxo de uso contínuo mesmo com rede/Apps Script lentos. | `pwa/js/dashboard.js`, `student-profiles.js`. | Erros ficam na fila/status global, não no modal fechado. |
-| Lista de perfis começa recolhida, mas não alterna após salvar | Organiza a Home sem interromper a navegação da pessoa usuária. | Estado `profilesExpanded`. | Abrir a lista, salvar um perfil e confirmar que ela permanece aberta. |
-| Último professor é uma lista compacta | Há casos com mais de um professor e não deve haver duas listas ocupando espaço. | `PERFIS_ALUNOS.ultimos_professores`, perfil PWA. | Selecionar múltiplos nomes e reabrir o perfil. |
-| Migração de schema preserva registros | Inserir apenas um cabeçalho deslocaria dados antigos. | `18_DashboardPerfisAlunos.gs`. | Primeiro save migra a coluna e mantém pagamento/etiquetas nos locais corretos. |
-| Catálogo de perfil é extensível | Etiquetas e professores precisam de opções controladas, sem texto livre. | `CONFIG_PERFIS_ALUNOS`. | Catálogo padrão é completado sem apagar opções já existentes. |
-| Fluxo é persistente e separado do snapshot semanal | Leads e churns não podem ser apagados pela importação de base. | `FLUXO_LEADS`, `FLUXO_CHURNS`. | Importar lote semanal sem modificar as duas abas. |
-| Histórico oficial de churn não será um novo importador semanal | O usuário fornecerá uma planilha oficial pontualmente e quer a carga feita na planilha. | Próxima etapa. | Definir aba histórica, mapeamento e deduplicação quando o arquivo chegar. |
+| Quatro arquivos por lote | Permanência integra a base oficial | importador, POP e testes | Ler instruções e rodar testes de lote |
+| Filas independentes | Ficha e avaliação geram ações distintas | Home, Acompanhamento e Configurações | Testes de dashboard/métricas |
+| Sem LTV estimado | Plano atual não representa preços históricos | Financeiro/Permanência | Testes de permanência |
+| Gravações otimistas | Operação não deve aguardar latência | perfis e Fluxo | Testes de mutações/fila |
+| Worker intermediário | Segredo não pode estar no navegador | `worker/`, API do PWA | Testes do Worker/API |
+| Repositório canônico novo | Usuário quer tudo no mesmo local | Git, Pages e documentação | Conferir remoto, branch e link |
 
 ## Informações importantes capturadas do chat
 
-- Padrão inicial da Home: **Matriculados** e **XSTEAM Wellness Club**.
-- O WhatsApp deve abrir a conversa específica do aluno em desktop e mobile.
-- Não usar dados pessoais reais em testes, contexto, commits ou protótipos.
-- O usuário quer que mudanças de VS Code não quebrem o salvamento. Mudanças de contrato PWA/backend exigem testes, deploy do Apps Script e aumento do cache do service worker.
-- Churns serão enriquecidos por uma planilha oficial de histórico de cancelamentos; o arquivo ainda não foi enviado nesta etapa.
-- Uma planilha de alunos novos também será enviada. Ela originará uma nova subaba de Fluxo e exige schema próprio na planilha.
+- O usuário quer execução direta e o mínimo possível de autenticações ou trabalhos manuais pequenos.
+- As próximas planilhas entram pela pasta de entrada; não deve haver transposição manual.
+- Planilhas reais não entram no GitHub.
+- Ausência de ficha/avaliação é diferente de atraso extremo; os dois processos permanecem separados.
+- Com poucos meses de dados de Fluxo, análises devem evitar conclusões fortes ou projeções prematuras.
+- A carga inicial de permanência foi autorizada e executada a partir do arquivo real fornecido.
 
 ## Etapa atual em desenvolvimento
 
-**Concluído:** perfil de aluno completo, seleção múltipla de Último professor, etiquetas `Performance`/`Coach`, migração de schema, cache PWA e publicação.
-
-**A planejar antes de codificar:**
-
-1. Carga pontual do histórico oficial de cancelamentos em aba persistente da planilha, fora do snapshot semanal.
-2. Nova aba e subaba **Alunos novos** em Fluxo, após receber a planilha fonte e mapear as colunas.
-3. Abertura do perfil de aluno pelo ID em Churn, reutilizando a ficha básica da Home e exibindo informações de plano disponíveis no tempo.
-4. Nova visualização da lista de Churns, adequada a registros longos/preenchidos.
-5. Ordenação comum nas listagens de alunos: alfabética e por data de referência contextual.
-6. Análise temporal de Leads, equivalente à de Churns, com janela inicial menor e dados de captação/conversão.
+- **O que está sendo feito:** conclusão da migração e publicação do PWA sob o novo endereço.
+- **Arquivos envolvidos:** árvore completa, contextos, workflows, URL padrão do Apps Script e testes de deploy.
+- **O que já está pronto:** histórico incorporado, código completo presente, Agenda preservada por tag, fallback público do Worker, URL nova e 200 testes aprovados.
+- **O que ainda falta:** enviar os commits, habilitar/confirmar Pages e validar o novo link.
+- **Cuidado ao continuar:** secrets de um repositório não são transferidos automaticamente. Worker e Apps Script existentes não devem ser recriados sem configuração explícita.
 
 ## Próximos passos
 
-1. Receber a planilha oficial de cancelamentos e a de alunos novos, sem o usuário precisar transpor ou editar os dados manualmente.
-2. Fazer o design do pacote Fluxo em partes: dados históricos, nova subaba, perfil por ID, organização de listas, ordenação e análise de Leads.
-3. Antes de carregar as planilhas, definir e testar: colunas canônicas, chave de deduplicação, política para linhas inválidas, aba de relatório de carga e reversibilidade.
-4. Confirmar a fonte de “informações de planos no tempo” para churns: os snapshots atuais trazem o retrato importado; histórico de planos só deve ser exibido se existir uma fonte confiável no arquivo/planilha.
-5. Implementar por blocos testáveis, atualizar Apps Script + PWA no mesmo marco quando o contrato mudar e publicar no `main`.
+1. Concluir o push e confirmar que `origin/main` corresponde ao HEAD local.
+2. Confirmar `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/`.
+3. Manter o endereço anterior ativo até validar o novo PWA em uso real.
+4. Quando desejado, cadastrar no canônico os secrets de Worker/Apps Script e habilitar seus deploys automáticos.
 
 ## Arquivos e pastas importantes
 
 | Caminho | Função | Observação |
 |---|---|---|
-| `apps-script/00_Config.gs` | Nomes das abas e cabeçalhos | Inclui schema persistente de perfil e Fluxo. |
-| `apps-script/12_DashboardApi.gs` | Bootstrap e API do dashboard | Reúne dados para o PWA. |
-| `apps-script/14_DashboardMutacoes.gs` | Escritas idempotentes | Fila de mutações de perfis e Fluxo. |
-| `apps-script/15_DashboardFluxo.gs` | Leituras, métricas e análises de Fluxo | Base para Churn e futura análise de Leads. |
-| `apps-script/18_DashboardPerfisAlunos.gs` | Perfil persistente e catálogo | Migra schema de perfil e valida escolhas. |
-| `pwa/js/dashboard.js` | Navegação, Fluxo, gráficos e fila | Lista Churn atual e futuros controles de ordenação. |
-| `pwa/js/student-profiles.js` | Modal de perfil do aluno | Campo múltiplo Último professor e WhatsApp. |
-| `pwa/css/student-profiles.css` | Layout do perfil | Grade responsiva e menu múltiplo compacto. |
-| `pwa/sw.js` | Cache instalável | Atual: `xsteam-static-v10`; aumentar a cada atualização PWA. |
-| `worker/src/index.js` | Ponte pública para Apps Script | Não expor segredo no PWA. |
-| `tests/` | Regressões automatizadas | Rodar `npm test` antes de publicar. |
-| `docs/superpowers/specs/` | Decisões aprovadas | Inclui design de Último professor. |
-| `docs/superpowers/plans/` | Planos executáveis | Inclui plano de Último professor. |
+| `LEIA-ME.md` | Visão operacional | Atualizado para a rotina de quatro relatórios |
+| `apps-script/00_Config.gs` | Abas, cabeçalhos e constantes | Ponto inicial do modelo |
+| `apps-script/03_Permanencia.gs` | Regras de permanência | Estado, eventos e métricas |
+| `apps-script/07_ImportacaoService.gs` | Orquestração do lote | Atomicidade e rollback |
+| `apps-script/12_DashboardApi.gs` | Bootstrap do PWA | Contrato principal de leitura |
+| `apps-script/14_DashboardMutacoes.gs` | Escritas idempotentes | Perfis e Fluxo |
+| `apps-script/18_DashboardPerfisAlunos.gs` | Perfis e catálogo | Preserva valores históricos |
+| `pwa/index.html` | Shell do PWA | Interface pública principal |
+| `pwa/js/dashboard.js` | Navegação e visões | Home, Financeiro, Acompanhamento, Fluxo e Configurações |
+| `pwa/js/permanencia.js` | Interface de permanência | Não calcula LTV estimado |
+| `pwa/sw.js` | Cache instalável | `xsteam-static-v11` |
+| `worker/src/index.js` | Ponte pública segura | Valida origem e ações |
+| `.github/workflows/deploy-pages.yml` | Publicação do PWA | Usa Worker atual como fallback |
+| `tests/` | Regressões automatizadas | Executar `npm test` |
+| `docs/superpowers/specs/2026-09-11-migracao-repositorio-canonico-design.md` | Design da migração | Inclui rollback e segurança |
 
 ## Riscos, bloqueios e pendências
 
-- **Arquivos pendentes:** as planilhas oficiais de churn e alunos novos não foram anexadas. Não iniciar carga com dados inferidos.
-- **Histórico de planos:** requisito de plano “nos tempos” depende de identificar uma fonte histórica confiável, não apenas o contrato vigente do snapshot.
-- **Escala da lista de churn:** modal atual cresce com o conteúdo; a nova solução precisa evitar lista longa sem busca/filtro/paginação ou agrupamento.
-- **Ordenação:** cada lista deve declarar sua data de referência; não usar uma data genérica que mude o significado de Churn, Lead, aluno ativo ou aluno novo.
-- **Privacidade:** telefones e planilhas oficiais são dados operacionais; não os versionar nem reproduzir em documentação/testes.
-- **Deploys:** mudança em contrato PWA/Apps Script requer os dois deploys. O workflow de Apps Script no GitHub pode falhar se os secrets não estiverem configurados; o deploy manual validado por `clasp` é o caminho atualmente usado.
-- **Diretório compartilhado:** não executar reset, checkout destrutivo ou limpeza ampla; preservar itens não rastreados do usuário.
+- **Pages:** o repositório novo pode exigir habilitação inicial antes do primeiro deploy.
+- **Secrets:** valores de Cloudflare e Apps Script não são legíveis nem transferíveis; deploys sensíveis ficam protegidos por variáveis de habilitação.
+- **Duplicidade temporária:** dois repositórios contêm o projeto na transição; novas alterações devem ocorrer somente no canônico após validação.
+- **Privacidade:** não versionar `.xls/.xlsx`, contatos, planilhas oficiais ou configurações locais.
+- **Histórico de planos:** não há fonte confiável de todos os preços históricos; não estimar LTV.
 
 ## Como retomar o trabalho
 
 1. Leia este arquivo e `CONTEXTO_DO_PROJETO.html`.
-2. Execute `git status --short --branch` e preserve arquivos não relacionados.
-3. Execute `npm test` antes de editar código.
-4. Para Fluxo, leia `apps-script/15_DashboardFluxo.gs`, `14_DashboardMutacoes.gs`, `pwa/js/dashboard.js` e os testes `dashboard-fluxo.test.js`/`dashboard-html.test.js`.
-5. Ao receber cada planilha, inspecione somente cabeçalhos, quantidade de linhas e exemplos anonimizados antes de propor o mapeamento.
-6. Faça design e aprovação por subprojeto antes de mexer em schema, importação ou interface.
-7. Ao mudar PWA, aumente a versão do cache; ao mudar backend, publique a implantação Apps Script estável e confirme compatibilidade antes do Pages.
+2. Confirme o remoto `fitmanagementels/ALUNOS_WELLNESS_2026` e execute `git status --short --branch`.
+3. Execute `npm test` antes e depois de alterações.
+4. Para dados, leia `00_Config.gs`, `03_Permanencia.gs`, `07_ImportacaoService.gs` e testes relacionados.
+5. Para interface, leia `dashboard.js`, `student-profiles.js`, `permanencia.js` e CSS associados.
+6. Ao alterar `pwa/`, aumente o cache em `pwa/sw.js`.
+7. Ao alterar o contrato backend/PWA, publique e valide Apps Script, Worker e Pages na ordem segura.
 
 ## Contexto para outro chat ou IA
 
-O projeto é a Base Central TecnoFit com PWA XSTEAM para Wellness. A fonte da interface é `pwa/`, publicada em GitHub Pages; Apps Script é backend e planilha; Worker faz a ponte pública sem expor segredos. `main` está no commit `6ad602f`, PWA cache `v10`, Apps Script estável versão 33 e `npm test` passou 176 testes. Não desfazer o fluxo otimista de salvamento nem o estado preservado da lista de perfis. `PERFIS_ALUNOS` contém responsável, `ultimos_professores` em JSON, pagamento, etiquetas e observações; a migração preserva schema antigo. Próximo pacote é Fluxo: receber planilha oficial de churn, criar Alunos novos, reutilizar perfil por ID nos churns, escalar lista de churn, oferecer ordenação em listagens e criar análise temporal de Leads. Não carregar os dois arquivos antes de recebê-los e não inventar histórico de planos; confirmar fonte e mapeamento. Preservar arquivos não rastreados do usuário e não expor PII.
+- **Objetivo essencial:** Base Central TecnoFit com PWA XSTEAM, quatro relatórios e persistência de perfis/Fluxo.
+- **Repositório canônico:** `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main`.
+- **Estado atual:** fonte migrada de `bc378e7`; 200 testes aprovados; novo Pages em validação.
+- **Arquivos a ler:** este contexto, `LEIA-ME.md`, módulos de configuração/importação/API, `pwa/js/dashboard.js`, `pwa/js/permanencia.js` e workflows.
+- **Não desfazer:** filas independentes; importação atômica; persistência manual; segredo apenas no Worker; permanência sem LTV inferido.
+- **Próxima ação:** verificar novo Pages e centralizar todas as mudanças no canônico.
+- **Rollback:** tag `agenda-legacy-2026-09-11` para a Agenda antiga; commit `bc378e7` no repositório anterior para o PWA pré-migração.
