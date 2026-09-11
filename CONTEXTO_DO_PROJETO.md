@@ -1,6 +1,6 @@
 # Contexto do Projeto — Base Central TecnoFit / PWA XSTEAM
 
-Última atualização: **11/09/2026 16:31 — America/Fortaleza (UTC−03:00)**
+Última atualização: **11/09/2026 16:53 — America/Fortaleza (UTC−03:00)**
 
 > Memória portátil canônica. Este repositório não deve conter planilhas reais, contatos, tokens, secrets ou credenciais.
 
@@ -29,13 +29,13 @@
 |---|---|
 | Repositório canônico | `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main` |
 | Fonte migrada | `fitmanagementels/BASE_TECNOFIT_WELLNESS`, commit `bc378e7` |
-| Migração local | Commit `c24d950`, a enviar ao remoto no encerramento deste marco |
+| Migração | Incorporada ao remoto desde `c24d950`; publicação robustecida em `89ea800` |
 | Testes | `npm test`: 200 aprovados, 0 falhas |
 | PWA | Código completo em `pwa/`; cache `xsteam-static-v12` |
-| Novo endereço esperado | `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/` |
+| PWA publicado | `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/` — HTTP 200, dados reais validados |
 | Endereço anterior | `https://fitmanagementels.github.io/BASE_TECNOFIT_WELLNESS/`, mantido como redundância |
 | Backend | Worker e Apps Script existentes continuam usados; último deploy Apps Script conhecido: versão 38 |
-| Onde parei | Contexto consolidado; falta enviar ao GitHub e confirmar Pages no novo repositório |
+| Onde parei | Migração, push e publicação concluídos; alterações futuras devem partir deste repositório |
 
 ## Arquitetura
 
@@ -87,6 +87,8 @@ Na carga inicial validada de permanência foram processados 980 registros; 314 I
 | `bc378e7` | Estado completo da fonte | PWA v11, Apps Script conhecido em versão 38 e executor privado |
 | `55688d7` | Backup da antiga Gestão de Agenda | Estado preservado também pela tag de restauração |
 | `c24d950` | Projeto e histórico migrados | Código, documentação e PWA reunidos no canônico |
+| `557923f` | Publicação no novo GitHub Pages | Cache do PWA elevado para `xsteam-static-v12` |
+| `89ea800` | Verificação resiliente da API | Retentativas evitam falhas de deploy por oscilação temporária |
 
 ## Decisões tomadas
 
@@ -119,20 +121,19 @@ Na carga inicial validada de permanência foram processados 980 registros; 314 I
 - Com poucos meses de dados de Fluxo, análises devem evitar conclusões fortes ou projeções prematuras.
 - A carga inicial de permanência foi autorizada e executada a partir do arquivo real fornecido.
 
-## Etapa atual em desenvolvimento
+## Último marco concluído
 
-- **O que está sendo feito:** conclusão da migração e publicação do PWA sob o novo endereço.
-- **Arquivos envolvidos:** árvore completa, contextos, workflows, URL padrão do Apps Script e testes de deploy.
-- **O que já está pronto:** histórico incorporado, código completo presente, Agenda preservada por tag, fallback público do Worker, URL nova e 200 testes aprovados.
-- **O que ainda falta:** enviar os commits, habilitar/confirmar Pages e validar o novo link.
+- **Resultado:** projeto, contexto, histórico e PWA consolidados no repositório canônico e publicados no novo endereço.
+- **Verificação:** workflow `Deploy PWA` concluído com sucesso para `89ea800`; página, configuração pública, service worker e carregamento dos dados foram validados.
+- **Proteção:** Agenda anterior preservada pela tag; PWA anterior continua disponível como redundância.
 - **Cuidado ao continuar:** secrets de um repositório não são transferidos automaticamente. Worker e Apps Script existentes não devem ser recriados sem configuração explícita.
 
 ## Próximos passos
 
-1. Concluir o push e confirmar que `origin/main` corresponde ao HEAD local.
-2. Confirmar `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/`.
-3. Manter o endereço anterior ativo até validar o novo PWA em uso real.
-4. Quando desejado, cadastrar no canônico os secrets de Worker/Apps Script e habilitar seus deploys automáticos.
+1. Fazer todas as próximas alterações em `fitmanagementels/ALUNOS_WELLNESS_2026`.
+2. Manter o endereço anterior ativo como redundância até a equipe adotar o novo link.
+3. Quando desejado, cadastrar no canônico os secrets de Worker/Apps Script e habilitar seus deploys automáticos.
+4. Continuar a rotina semanal com os quatro relatórios de mesma data e revisão.
 
 ## Arquivos e pastas importantes
 
@@ -156,9 +157,8 @@ Na carga inicial validada de permanência foram processados 980 registros; 314 I
 
 ## Riscos, bloqueios e pendências
 
-- **Pages:** o repositório novo pode exigir habilitação inicial antes do primeiro deploy.
 - **Secrets:** valores de Cloudflare e Apps Script não são legíveis nem transferíveis; deploys sensíveis ficam protegidos por variáveis de habilitação.
-- **Duplicidade temporária:** dois repositórios contêm o projeto na transição; novas alterações devem ocorrer somente no canônico após validação.
+- **Redundância:** o repositório anterior continua online, mas novas alterações devem ocorrer somente no canônico.
 - **Privacidade:** não versionar `.xls/.xlsx`, contatos, planilhas oficiais ou configurações locais.
 - **Histórico de planos:** não há fonte confiável de todos os preços históricos; não estimar LTV.
 
@@ -176,8 +176,8 @@ Na carga inicial validada de permanência foram processados 980 registros; 314 I
 
 - **Objetivo essencial:** Base Central TecnoFit com PWA XSTEAM, quatro relatórios e persistência de perfis/Fluxo.
 - **Repositório canônico:** `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main`.
-- **Estado atual:** fonte migrada de `bc378e7`; 200 testes aprovados; novo Pages em validação.
+- **Estado atual:** fonte migrada de `bc378e7`; 200 testes aprovados; novo Pages publicado e dados validados em `89ea800`.
 - **Arquivos a ler:** este contexto, `LEIA-ME.md`, módulos de configuração/importação/API, `pwa/js/dashboard.js`, `pwa/js/permanencia.js` e workflows.
 - **Não desfazer:** filas independentes; importação atômica; persistência manual; segredo apenas no Worker; permanência sem LTV inferido.
-- **Próxima ação:** verificar novo Pages e centralizar todas as mudanças no canônico.
+- **Próxima ação:** usar o novo PWA e centralizar todas as mudanças futuras no canônico.
 - **Rollback:** tag `agenda-legacy-2026-09-11` para a Agenda antiga; commit `bc378e7` no repositório anterior para o PWA pré-migração.
