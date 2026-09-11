@@ -65,6 +65,7 @@ test('onOpen cria menu TecnoFit com ações para atualização e dashboard', () 
     ['item', 'Abrir painel', 'abrirPainel'],
     ['item', 'Abrir dashboard', 'abrirDashboard'],
     ['item', 'Preencher IDs pendentes de Fluxo', 'preencherIdsPendentesFluxo'],
+    ['item', 'Gerar prévia de transição de Churns', 'gerarPreviaTransicaoChurns'],
     ['menu-added']
   ]);
 });

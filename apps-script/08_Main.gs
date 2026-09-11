@@ -4,6 +4,7 @@ function onOpen() {
     .addItem('Abrir painel', 'abrirPainel')
     .addItem('Abrir dashboard', 'abrirDashboard')
     .addItem('Preencher IDs pendentes de Fluxo', 'preencherIdsPendentesFluxo')
+    .addItem('Gerar prévia de transição de Churns', 'gerarPreviaTransicaoChurns')
     .addToUi();
 }
 

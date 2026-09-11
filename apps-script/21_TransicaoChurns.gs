@@ -10,6 +10,16 @@ var CAMPOS_MANUAIS_TRANSICAO_CHURNS = Object.freeze([
   'sinais_contexto', 'acao_retencao'
 ]);
 
+var ABA_PREVIA_TRANSICAO_CHURNS = 'PREVIA_TRANSICAO_CHURNS';
+var CHAVE_FONTE_OFICIAL_CHURNS = 'tecnofit.fluxo.churns.fonte_oficial_id';
+var CABECALHOS_PREVIA_TRANSICAO_CHURNS = Object.freeze([
+  'grupo', 'aluno_id', 'nome_oficial', 'nome_anterior', 'inicio_oficial',
+  'vencimento_oficial', 'plano_oficial', 'valor_oficial', 'professor_oficial',
+  'modalidade_oficial', 'telefone_preservado', 'profissional_responsavel',
+  'ultimo_personal', 'motivo_saida', 'sinais_contexto', 'acao_retencao',
+  'detalhe_revisao'
+]);
+
 function textoTransicaoChurn_(valor) {
   return String(valor == null ? '' : valor).trim();
 }
@@ -266,4 +276,64 @@ function construirPreviaTransicaoChurns_(linhasOficiais, churnsAtuais) {
   };
   linhas.forEach(function (linha) { resumo[grupoParaResumoTransicaoChurn_(linha.grupo)] += 1; });
   return { linhas: linhas, resumo: resumo };
+}
+
+function configurarFonteOficialChurns_(fileId) {
+  var id = textoTransicaoChurn_(fileId);
+  if (!id) throw new Error('ID da fonte oficial de Churns inválido.');
+  PropertiesService.getScriptProperties().setProperty(CHAVE_FONTE_OFICIAL_CHURNS, id);
+  return { ok: true };
+}
+
+function serializarLinhaPreviaTransicaoChurn_(linha) {
+  var valores = [
+    linha.grupo, linha.alunoId, linha.nomeOficial, linha.nomeAnterior, linha.inicioOficial,
+    linha.vencimentoOficial, linha.planoOficial, linha.valorOficial, linha.professorOficial,
+    linha.modalidadeOficial, linha.telefonePreservado, linha.profissionalResponsavel,
+    linha.ultimoPersonal, linha.motivoSaida, linha.sinaisContexto, linha.acaoRetencao,
+    linha.detalheRevisao
+  ];
+  if (valores.length !== CABECALHOS_PREVIA_TRANSICAO_CHURNS.length) {
+    throw new Error('Estrutura de prévia de Churns incompatível.');
+  }
+  return valores;
+}
+
+function escreverPreviaTransicaoChurns_(planilha, previa) {
+  var aba = planilha.getSheetByName(ABA_PREVIA_TRANSICAO_CHURNS) || planilha.insertSheet(ABA_PREVIA_TRANSICAO_CHURNS);
+  var filtro = aba.getFilter();
+  if (filtro) filtro.remove();
+  var linhas = (previa.linhas || []).map(serializarLinhaPreviaTransicaoChurn_);
+  aba.clearContents();
+  aba.getRange(1, 1, linhas.length + 1, CABECALHOS_PREVIA_TRANSICAO_CHURNS.length)
+    .setValues([CABECALHOS_PREVIA_TRANSICAO_CHURNS].concat(linhas));
+  aba.getRange(1, 1, 1, CABECALHOS_PREVIA_TRANSICAO_CHURNS.length)
+    .setFontWeight('bold')
+    .setBackground('#14324A')
+    .setFontColor('#FFFFFF');
+  aba.setFrozenRows(1);
+  aba.getRange(1, 1, Math.max(linhas.length + 1, 2), CABECALHOS_PREVIA_TRANSICAO_CHURNS.length).createFilter();
+  return aba;
+}
+
+function gerarPreviaTransicaoChurns() {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  try {
+    var fileId = textoTransicaoChurn_(PropertiesService.getScriptProperties().getProperty(CHAVE_FONTE_OFICIAL_CHURNS));
+    if (!fileId) throw new Error('Fonte oficial de Churns não configurada.');
+    var linhasOficiais = parseTabelaXlsx(DriveApp.getFileById(fileId).getBlob());
+    var planilha = SpreadsheetApp.openById(CONFIG.planilhaId);
+    var churnsAtuais = lerTabelaDashboardDaPlanilha_(
+      planilha, CONFIG.abas.fluxoChurns, CONFIG.cabecalhos.fluxoChurns
+    ).map(function (churn) {
+      return CONFIG.cabecalhos.fluxoChurns.map(function (campo) { return churn[campo]; });
+    });
+    var previa = construirPreviaTransicaoChurns_(linhasOficiais, churnsAtuais);
+    escreverPreviaTransicaoChurns_(planilha, previa);
+    SpreadsheetApp.flush();
+    return { aba: ABA_PREVIA_TRANSICAO_CHURNS, resumo: previa.resumo };
+  } finally {
+    lock.releaseLock();
+  }
 }
