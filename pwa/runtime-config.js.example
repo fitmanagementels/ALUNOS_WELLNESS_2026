@@ -1,0 +1,3 @@
+window.XSTEAM_RUNTIME_CONFIG = {
+  workerUrl: 'SUBSTITUIDO_NO_DEPLOY'
+};

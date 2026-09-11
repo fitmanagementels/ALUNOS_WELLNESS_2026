@@ -1,0 +1,63 @@
+name: Deploy PWA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pwa/**'
+      - 'scripts/gerar-runtime-config.js'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_WORKER_URL: ${{ vars.PUBLIC_WORKER_URL || 'https://xsteam-dashboard-api.fitmanagement-els.workers.dev' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: node scripts/gerar-runtime-config.js
+      - name: Verificar compatibilidade de salvamento de perfis
+        run: |
+          node <<'NODE'
+          (async function () {
+            const workerUrl = String(process.env.PUBLIC_WORKER_URL || '').replace(/\/$/, '');
+            const response = await fetch(workerUrl + '/api', {
+              method: 'POST',
+              headers: {
+                'content-type': 'application/json',
+                origin: 'https://fitmanagementels.github.io'
+              },
+              body: JSON.stringify({ action: 'versao', payload: {} })
+            });
+            const result = await response.json();
+            if (!response.ok || !result || result.ok !== true || !result.data ||
+                !result.data.capacidades || result.data.capacidades.perfilAluno !== true) {
+              throw new Error('A API publicada não confirma suporte ao salvamento de perfis de alunos.');
+            }
+            console.log('API de perfis de alunos compatível.');
+          }()).catch(function (error) {
+            console.error(error.message);
+            process.exit(1);
+          });
+          NODE
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: pwa
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#080a0a"><meta name="color-scheme" content="dark"><title>XSTEAM — Gestão</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./css/dashboard.css"><link rel="stylesheet" href="./css/student-profiles.css"><link rel="stylesheet" href="./css/permanencia.css"></head><body>
+<div id="app" class="app-shell" hidden><svg class="svg-symbol-definitions" aria-hidden="true" focusable="false" width="0" height="0">
+  <symbol id="xsteam-logo-symbol" viewBox="0 0 447 447">
+    <path d="M319.37 315.20C318.56 316.52 96 316.18 96 314.86c0-1.07 2.34-3.61 26.06-28.35 5.81-6.05 21.6-22.71 35.09-37.01l24.53-26-2.7-4.5c-1.49-2.48-10.7-18-20.47-34.5-9.77-16.5-20.83-35.18-24.58-41.5l-6.83-11.5 56.45-.26c31.05-.14 81.86-.14 112.91 0l56.45.26-10.58 12c-46.9 53.15-66.03 74.94-69.12 78.72-1.33 1.63-1.3 1.69 21.61 44.78 18.67 35.11 24.98 47.51 24.55 48.2ZM192 312.57c0 1.28 2.64-1.47 15.66-16.35 7.57-8.64 17.38-19.78 21.8-24.75 4.42-4.96 10.74-12.13 14.04-15.93 3.3-3.79 10.81-12.33 16.69-18.97l10.69-12.07-20.44-.27c-11.24-.15-20.44-.67-20.44-1.17 0-.49 1.55-4.42 3.43-8.73 1.89-4.3 7.54-17.51 12.55-29.33l12.71-30c1.99-4.68 4.73-11.1 6.1-14.27 1.38-3.17 2.28-5.99 2.01-6.26-.27-.27-10.57 10.18-22.9 23.22-12.32 13.04-31.06 32.84-41.65 44-10.59 11.16-19.25 20.74-19.25 21.3 0 .65 8.17 1.01 23 1.01 12.65 0 23 .18 23 .4 0 .21-1.3 3.48-2.89 7.08-5.94 14.12-22.57 53.3-28.23 66.57-3.24 7.63-5.88 14.07-5.88 14.37Z" fill="#000101"/>
+    <path d="M0 223.5V0h447v447H0V223.5Zm319.37 91.7c.43-.69-5.88-13.09-24.55-48.2-22.91-43.09-22.94-43.15-21.61-44.78 3.09-3.78 22.22-25.57 69.12-78.72l10.58-12-56.45-.26c-31.05-.14-81.86-.14-112.91 0l-56.45.26 6.83 11.5c3.75 6.32 14.81 25 24.58 41.5 9.77 16.5 18.98 32.02 20.47 34.5l2.7 4.5-24.53 26c-13.49 14.3-29.28 30.96-35.09 37.01C98.34 311.25 96 313.79 96 314.86c0 1.32 222.56 1.66 223.37.34ZM192 312.57c0-.3 2.64-6.74 5.88-14.37 5.66-13.27 22.29-52.45 28.23-66.57 1.59-3.6 2.89-6.87 2.89-7.08 0-.22-10.35-.4-23-.4-14.83 0-23-.36-23-1.01 0-.56 8.66-10.14 19.25-21.3 10.59-11.16 29.33-30.96 41.65-44 12.33-13.04 22.63-23.49 22.9-23.22.27.27-.63 3.09-2.01 6.26-1.37 3.17-4.11 9.59-6.1 14.27l-12.71 30c-5.01 11.82-10.66 25.03-12.55 29.33-1.88 4.31-3.43 8.24-3.43 8.73 0 .5 9.2 1.02 20.44 1.17l20.44.27-10.69 12.07c-5.88 6.64-13.39 15.18-16.69 18.97-3.3 3.8-9.62 10.97-14.04 15.93-4.42 4.97-14.23 16.11-21.8 24.75C194.64 311.1 192 313.85 192 312.57Z" fill="#dffb45"/>
+  </symbol>
+</svg>
+<section id="loading-screen" class="loading-screen" aria-live="polite">
+  <svg class="brand-logo brand-logo-splash" role="img" aria-label="XSTEAM" viewBox="0 0 447 447"><use href="#xsteam-logo-symbol"></use></svg>
+  <p class="loading-kicker">XSTEAM</p>
+  <h1>Gestão de alunos</h1>
+  <div class="progress-track"><span id="loading-progress"></span></div>
+  <p id="loading-message" class="body-copy">Preparando visão operacional…</p>
+</section>
+
+<aside class="desktop-sidebar" aria-label="Navegação principal">
+  <div class="brand-lockup"><svg class="brand-logo brand-logo-sidebar" role="img" aria-label="XSTEAM" viewBox="0 0 447 447"><use href="#xsteam-logo-symbol"></use></svg><strong>XSTEAM</strong></div>
+  <nav class="main-nav">
+    <button class="nav-button active" type="button" data-page="home">Home</button>
+    <button class="nav-button" type="button" data-page="financeiro">Financeiro</button>
+    <button class="nav-button" type="button" data-page="acompanhamento">Acompanhamento</button>
+    <button class="nav-button" type="button" data-page="fluxo">Fluxo</button>
+    <button class="nav-button" type="button" data-page="configuracoes">Configurações</button>
+  </nav>
+  <p class="sidebar-note">Dados do último lote válido.</p>
+</aside>
+
+<div class="dashboard-workspace">
+  <header class="topbar">
+    <svg class="brand-logo brand-logo-mobile" aria-hidden="true" viewBox="0 0 447 447"><use href="#xsteam-logo-symbol"></use></svg>
+    <div><p class="eyebrow">XSTEAM / OPERAÇÃO</p><h1 id="pageTitle">Home</h1></div>
+    <p id="lastUpdate" class="update-label">Carregando base…</p>
+  </header>
+  <main class="content" id="mainContent">
+    <section class="global-filters" aria-label="Filtros globais">
+      <label>Status<select id="globalStatus"></select></label>
+      <label>Polo<select id="globalPolo"></select></label>
+    </section>
+    <nav id="subnav" class="subnav" aria-label="Subnavegação" hidden>
+      <button type="button" data-subpage="planos">Planos</button>
+      <button type="button" data-subpage="vencimentos">Vencimentos</button>
+      <button type="button" data-subpage="permanencia">Permanência</button>
+      <button type="button" data-subpage="prescricoes">Prescrições</button>
+      <button type="button" data-subpage="avaliacoes">Avaliações</button>
+      <button type="button" data-subpage="leads">Leads</button>
+      <button type="button" data-subpage="churns">Churns</button>
+    </nav>
+    <section id="pageContent" class="page-content" aria-live="polite"></section>
+  </main>
+</div>
+
+<nav class="mobile-dock" aria-label="Navegação principal móvel">
+  <button class="dock-button active" type="button" data-page="home" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10H3V10Zm6 10v-6h6v6"></path></svg></button>
+  <button class="dock-button" type="button" data-page="financeiro" aria-label="Financeiro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 13h5M16 16h.01"></path></svg></button>
+  <button class="dock-button" type="button" data-page="acompanhamento" aria-label="Acompanhamento"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2.2-5 4 10 2.1-5H21"></path></svg></button>
+  <button class="dock-button" type="button" data-page="fluxo" aria-label="Fluxo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4v16M6 7h7a3 3 0 1 0 0-6M6 17h7a3 3 0 1 1 0 6"></path></svg></button>
+  <button class="dock-button" type="button" data-page="configuracoes" aria-label="Configurações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5v2m0 14v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4H3m18 0h-2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></button>
+</nav>
+
+<dialog id="detailDialog" class="detail-dialog" role="dialog" aria-labelledby="detailTitle">
+  <header><h2 id="detailTitle">Detalhamento</h2><button id="detailClose" class="icon-button" type="button" aria-label="Fechar">×</button></header>
+  <div id="detailContent"></div>
+</dialog>
+<div class="save-feedback">
+  <p id="saveStatus" class="save-status" role="status" aria-live="polite"></p>
+  <button id="retryMutations" class="save-retry" type="button" hidden>Tentar novamente</button>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script><script src="./runtime-config.js"></script><script src="./js/config.js"></script><script src="./js/api.js"></script><script src="./js/student-profiles.js"></script><script src="./js/permanencia.js"></script><script src="./js/app.js"></script></body></html>

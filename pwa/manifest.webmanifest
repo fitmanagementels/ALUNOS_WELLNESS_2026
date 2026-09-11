@@ -1,0 +1,12 @@
+{
+  "name": "XSTEAM — Gestão",
+  "short_name": "XSTEAM",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080a0a",
+  "theme_color": "#080a0a",
+  "icons": [
+    { "src": "./assets/xsteam-gestao-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

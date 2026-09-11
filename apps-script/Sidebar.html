@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      :root {
+        color-scheme: light;
+        --azul: #14324a;
+        --azul-claro: #eaf2f8;
+        --verde: #177245;
+        --verde-claro: #e7f5ed;
+        --vermelho: #b3261e;
+        --vermelho-claro: #fce8e6;
+        --texto: #24313b;
+        --muted: #667681;
+        --borda: #d9e1e6;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 18px;
+        color: var(--texto);
+        background: #fff;
+        font: 14px/1.45 Arial, sans-serif;
+      }
+      h1 { margin: 0 0 4px; color: var(--azul); font-size: 20px; }
+      .subtitulo { margin: 0 0 18px; color: var(--muted); font-size: 12px; }
+      .card {
+        margin-bottom: 12px;
+        padding: 13px;
+        border: 1px solid var(--borda);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .rotulo {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+      }
+      .badge {
+        display: inline-block;
+        margin-bottom: 9px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .badge.ok { color: var(--verde); background: var(--verde-claro); }
+      .badge.erro { color: var(--vermelho); background: var(--vermelho-claro); }
+      .linha { margin: 3px 0; }
+      .esperados { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 11px; }
+      .arquivos { margin: 7px 0 0; padding-left: 18px; color: var(--muted); font-size: 12px; }
+      .mensagem {
+        display: none;
+        margin: 12px 0;
+        padding: 10px;
+        border-radius: 8px;
+        white-space: pre-line;
+      }
+      .mensagem.ok { display: block; color: var(--verde); background: var(--verde-claro); }
+      .mensagem.erro { display: block; color: var(--vermelho); background: var(--vermelho-claro); }
+      button {
+        width: 100%;
+        padding: 11px 14px;
+        border: 0;
+        border-radius: 8px;
+        color: #fff;
+        background: var(--azul);
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button:hover:not(:disabled) { background: #0d2639; }
+      button:disabled { cursor: wait; opacity: .55; }
+      .rodape { margin-top: 10px; color: var(--muted); font-size: 11px; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <h1>Atualização da base</h1>
+    <p class="subtitulo">Importa o lote presente em 01_ENTRADA.</p>
+
+    <section class="card" id="cardLote">
+      <span class="rotulo">Lote de entrada</span>
+      <p class="linha">Envie os quatro relatórios com a mesma data e revisão:</p>
+      <ul class="esperados">
+        <li class="arquivo-esperado">vencimentos_AAAA-MM-DD_rNN.xls</li>
+        <li class="arquivo-esperado">fichas_AAAA-MM-DD_rNN.xls</li>
+        <li class="arquivo-esperado">avaliacao_fisica_AAAA-MM-DD_rNN.xls</li>
+        <li class="arquivo-esperado">permanencia_AAAA-MM-DD_rNN.xls</li>
+      </ul>
+      <div id="conteudoLote">Verificando…</div>
+    </section>
+
+    <section class="card">
+      <span class="rotulo">Última importação</span>
+      <div id="ultimaImportacao">Carregando…</div>
+    </section>
+
+    <div id="mensagem" class="mensagem"></div>
+    <button id="botaoAtualizar" type="button" disabled>Atualizar base</button>
+    <div class="rodape">Não feche a planilha durante o processamento.</div>
+
+    <script>
+      const botao = document.getElementById('botaoAtualizar');
+      const mensagem = document.getElementById('mensagem');
+
+      function escaparLista(arquivos) {
+        const ul = document.createElement('ul');
+        ul.className = 'arquivos';
+        arquivos.forEach(nome => {
+          const li = document.createElement('li');
+          li.textContent = nome;
+          ul.appendChild(li);
+        });
+        return ul;
+      }
+
+      function mostrarMensagem(tipo, texto) {
+        mensagem.className = `mensagem ${tipo}`;
+        mensagem.textContent = texto;
+      }
+
+      function limparMensagem() {
+        mensagem.className = 'mensagem';
+        mensagem.textContent = '';
+      }
+
+      function normalizarErro(erro) {
+        return erro && erro.message ? erro.message : String(erro || 'Erro desconhecido.');
+      }
+
+      function renderizarStatus(status) {
+        const lote = document.getElementById('conteudoLote');
+        lote.replaceChildren();
+        const badge = document.createElement('span');
+        badge.className = `badge ${status.ready ? 'ok' : 'erro'}`;
+        badge.textContent = status.ready ? 'Pronto para importar' : 'Atenção necessária';
+        lote.appendChild(badge);
+
+        if (status.ready && status.lote) {
+          const resumo = document.createElement('div');
+          resumo.className = 'linha';
+          resumo.textContent = `${status.lote.dataReferencia} · ${status.lote.revisao}`;
+          lote.appendChild(resumo);
+          lote.appendChild(escaparLista(status.lote.arquivos || []));
+        } else {
+          const erro = document.createElement('div');
+          erro.textContent = (status.erros || ['Lote indisponível.']).join('\n');
+          lote.appendChild(erro);
+        }
+
+        const ultima = document.getElementById('ultimaImportacao');
+        ultima.textContent = status.ultimaImportacao
+          ? `${status.ultimaImportacao.dataReferencia} · ${status.ultimaImportacao.revisao}\n${status.ultimaImportacao.concluidaEm}`
+          : 'Nenhuma importação concluída.';
+        botao.disabled = !status.ready;
+      }
+
+      function carregarStatus() {
+        botao.disabled = true;
+        google.script.run
+          .withSuccessHandler(renderizarStatus)
+          .withFailureHandler(erro => {
+            mostrarMensagem('erro', normalizarErro(erro));
+            botao.disabled = true;
+          })
+          .obterStatusImportacao();
+      }
+
+      function atualizarBase() {
+        limparMensagem();
+        botao.disabled = true;
+        botao.textContent = 'Atualizando…';
+        google.script.run
+          .withSuccessHandler(resultado => {
+            const avisos = resultado.avisos && resultado.avisos.length
+              ? `\n\nAvisos:\n• ${resultado.avisos.join('\n• ')}`
+              : '';
+            mostrarMensagem(
+              'ok',
+              `Atualização concluída.\n${resultado.alunos} alunos · ${resultado.contratos} contratos${avisos}`
+            );
+            botao.textContent = 'Atualizar base';
+            carregarStatus();
+          })
+          .withFailureHandler(erro => {
+            mostrarMensagem('erro', normalizarErro(erro));
+            botao.textContent = 'Atualizar base';
+            carregarStatus();
+          })
+          .executarImportacao();
+      }
+
+      botao.addEventListener('click', atualizarBase);
+      carregarStatus();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POP — 01_ENTRADA | XSTEAM</title>
+  <style>
+    :root {
+      --ink: #060706;
+      --lime: #dfff22;
+      --paper: #f5f6f1;
+      --muted: #59605a;
+      --line: #d6dbd2;
+      --danger: #bd472d;
+      --soft-lime: #f4ffc4;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #dfe2dc; color: var(--ink); }
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 10.3pt; line-height: 1.35; }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 8mm;
+      padding: 12mm 14mm 11mm;
+      background: var(--paper);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 5mm;
+      margin-bottom: 7mm;
+    }
+
+    .brand {
+      display: flex;
+      gap: 3mm;
+      align-items: center;
+      font-size: 15pt;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .mark {
+      width: 10mm;
+      height: 10mm;
+      display: grid;
+      place-items: center;
+      background: var(--lime);
+      color: var(--ink);
+      font-size: 17pt;
+      line-height: 1;
+      font-weight: 1000;
+      transform: skewX(-10deg);
+    }
+
+    .tag {
+      font-size: 7.5pt;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: #fff;
+      padding: 2.2mm 3.2mm;
+      border-radius: 99px;
+    }
+
+    .workflow-page .topbar::before {
+      content: "X  XSTEAM";
+      color: var(--ink);
+      font-size: 15pt;
+      font-weight: 900;
+      letter-spacing: .02em;
+      word-spacing: 2mm;
+    }
+    .workflow-page .brand { display: none; }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: 29pt;
+      line-height: .94;
+      letter-spacing: -.055em;
+      margin: 0 0 3.5mm;
+      max-width: 155mm;
+    }
+    h1 span { color: #6e7500; }
+    h2 {
+      font-size: 13.5pt;
+      line-height: 1.1;
+      margin: 0 0 3mm;
+      letter-spacing: -.02em;
+    }
+    h3 {
+      font-size: 9pt;
+      letter-spacing: .075em;
+      text-transform: uppercase;
+      margin-bottom: 2.2mm;
+    }
+
+    .intro {
+      max-width: 152mm;
+      color: #353b36;
+      font-size: 11.2pt;
+      margin-bottom: 6mm;
+    }
+
+    .main-rule {
+      background: var(--ink);
+      color: #fff;
+      border-radius: 3mm;
+      padding: 5mm 6mm 5.5mm;
+      margin-bottom: 5mm;
+    }
+    .main-rule h2 { color: var(--lime); margin-bottom: 2mm; }
+    .main-rule p { margin: 0; font-size: 10.5pt; }
+
+    .files {
+      margin-top: 4mm;
+      display: grid;
+      gap: 1.7mm;
+    }
+    .file {
+      display: inline-block;
+      width: max-content;
+      max-width: 100%;
+      padding: 2.3mm 3mm;
+      background: #1e211d;
+      border-left: 3px solid var(--lime);
+      border-radius: 1.2mm;
+      color: var(--lime);
+      font-family: "Courier New", monospace;
+      font-weight: 700;
+      font-size: 8.7pt;
+      white-space: nowrap;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+      margin-bottom: 5mm;
+    }
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 2.6mm;
+      padding: 4mm;
+    }
+    .panel ul, .panel ol { margin: 0; padding-left: 4.5mm; }
+    .panel li { margin: 0 0 2mm; }
+    .panel li:last-child { margin-bottom: 0; }
+
+    .formula {
+      background: var(--soft-lime);
+      border: 1px solid #c4d65b;
+      border-radius: 2.6mm;
+      padding: 3.6mm 4mm;
+      font-family: "Courier New", monospace;
+      font-size: 8.8pt;
+      font-weight: 700;
+      line-height: 1.5;
+      margin: 3.2mm 0;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5mm 5mm;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 2.4mm;
+      font-size: 9.1pt;
+    }
+    .box {
+      width: 3.7mm;
+      height: 3.7mm;
+      border: 1.3px solid var(--ink);
+      margin-top: .3mm;
+      flex: 0 0 auto;
+    }
+
+    .example {
+      border-left: 3px solid #8e9900;
+      padding: 2.5mm 3.5mm;
+      font-family: "Courier New", monospace;
+      font-size: 8.7pt;
+      background: #fff;
+      margin: 2.5mm 0 0;
+    }
+
+    .rule-line {
+      position: absolute;
+      height: 4mm;
+      background: var(--lime);
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .footer {
+      position: absolute;
+      bottom: 5.8mm;
+      left: 14mm;
+      right: 14mm;
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 7.3pt;
+    }
+
+    .workflow {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: fluxo;
+    }
+    .workflow li {
+      counter-increment: fluxo;
+      position: relative;
+      min-height: 11mm;
+      padding: 1mm 0 2mm 14mm;
+      font-size: 9.6pt;
+    }
+    .workflow li::before {
+      content: counter(fluxo, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 9mm;
+      height: 9mm;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--lime);
+      font-size: 7.5pt;
+      font-weight: 900;
+    }
+    .workflow li > strong { display: block; font-size: 9.8pt; }
+    .workflow span { display: block; color: var(--muted); font-size: 8.8pt; }
+
+    .two-up {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 5mm;
+      margin-top: 3.5mm;
+    }
+    .notice {
+      padding: 4mm;
+      border-radius: 2.6mm;
+      border: 1px solid #e0c1b8;
+      background: #fff6f3;
+    }
+    .notice h2 { color: var(--danger); }
+    .notice ol { padding-left: 4.5mm; margin: 0; }
+    .notice li { margin-bottom: 1.6mm; }
+
+    .revision {
+      padding: 4mm;
+      border-radius: 2.6mm;
+      background: var(--ink);
+      color: #fff;
+    }
+    .revision h2 { color: var(--lime); }
+    .revision p { margin-bottom: 2.5mm; }
+    .revision code {
+      display: block;
+      color: var(--lime);
+      font-family: "Courier New", monospace;
+      font-size: 8.4pt;
+      line-height: 1.55;
+    }
+
+    .dont {
+      display: flex;
+      gap: 3mm;
+      align-items: center;
+      margin-top: 4.5mm;
+      padding: 3.5mm 4mm;
+      border: 1px solid var(--line);
+      border-radius: 2.6mm;
+      background: #fff;
+    }
+    .dont > strong {
+      display: grid;
+      place-items: center;
+      width: 8mm;
+      height: 8mm;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--danger);
+      color: #fff;
+      font-size: 13pt;
+    }
+    .dont p { margin: 0; font-size: 9pt; }
+
+    @media print {
+      html, body { background: #fff; }
+      .page { margin: 0; break-after: page; }
+      .page:last-child { break-after: auto; }
+    }
+    @page { size: A4; margin: 0; }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <header class="topbar">
+      <div class="brand"><span class="mark">X</span><span>XSTEAM</span></div>
+      <span class="tag">POP operacional · 01_ENTRADA</span>
+    </header>
+
+    <main>
+      <h1>Atualize a base<br>sem <span>erro de lote.</span></h1>
+      <p class="intro">Guia rápido para preparar os relatórios semanais, renomear corretamente os arquivos e atualizar a base TecnoFit com segurança.</p>
+
+      <section class="main-rule">
+        <h2>A regra que não pode falhar</h2>
+        <p>A pasta <strong>01_ENTRADA</strong> deve ter os quatro relatórios abaixo com a <strong>mesma data</strong> e a <strong>mesma revisão</strong>. Este PDF pode permanecer na pasta.</p>
+        <div class="files">
+          <span class="file">vencimentos_AAAA-MM-DD_rNN.xls</span>
+          <span class="file">fichas_AAAA-MM-DD_rNN.xls</span>
+          <span class="file">avaliacao_fisica_AAAA-MM-DD_rNN.xls</span>
+          <span class="file">permanencia_AAAA-MM-DD_rNN.xls</span>
+        </div>
+      </section>
+
+      <div class="columns">
+        <section class="panel">
+          <h3>Como montar o nome</h3>
+          <div class="formula">tipo_2026-08-21_r01.xls</div>
+          <ul>
+            <li><strong>AAAA-MM-DD</strong> é a data de referência/exportação.</li>
+            <li><strong>rNN</strong> é a revisão, sempre com dois dígitos.</li>
+            <li>Use minúsculas, sem espaços e sem acentos.</li>
+          </ul>
+          <p class="example">vencimentos_2026-08-21_r01.xls<br>fichas_2026-08-21_r01.xls<br>avaliacao_fisica_2026-08-21_r01.xls<br>permanencia_2026-08-21_r01.xls</p>
+        </section>
+
+        <section class="panel">
+          <h3>Antes de importar</h3>
+          <ul class="checklist">
+            <li><span class="box"></span><span>Há quatro relatórios <strong>.xls</strong>.</span></li>
+            <li><span class="box"></span><span>Os quatro tipos estão presentes.</span></li>
+            <li><span class="box"></span><span>A data é igual nos quatro arquivos.</span></li>
+            <li><span class="box"></span><span>A revisão é igual nos quatro arquivos.</span></li>
+            <li><span class="box"></span><span>O PDF pode ficar na pasta; nada mais.</span></li>
+            <li><span class="box"></span><span>Permanência foi exportada completa, sem filtro de status.</span></li>
+            <li><span class="box"></span><span>Os relatórios não foram editados.</span></li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="dont">
+        <strong>×</strong>
+        <p><strong>Não faça:</strong> abrir e salvar no Excel, converter para Google Sheets, mudar cabeçalhos, editar dados, nem acrescentar termos como <em>novo</em>, <em>final</em> ou <em>corrigido</em> ao nome.</p>
+      </section>
+    </main>
+
+    <div class="footer"><span>TECNOFIT_BASE_CENTRAL · uso interno</span><span>Versão 1.1 · 21/08/2026 · página 1/2</span></div>
+    <div class="rule-line"></div>
+  </section>
+
+  <section class="page workflow-page">
+    <header class="topbar">
+      <div class="brand"><span class="mark">X</span><span>XSTEAM</span></div>
+      <span class="tag">Fluxo semanal</span>
+    </header>
+
+    <main>
+      <h1>Da exportação à<br><span>base atualizada.</span></h1>
+      <p class="intro">Execute o fluxo abaixo uma única vez por lote. Ao final, os arquivos são arquivados automaticamente.</p>
+
+      <ol class="workflow">
+        <li><strong>Exporte os quatro relatórios</strong><span>Vencimentos, fichas, avaliação física e permanência completa, sem filtro de status.</span></li>
+        <li><strong>Renomeie os quatro arquivos</strong><span>Siga exatamente o padrão mostrado na primeira página.</span></li>
+        <li><strong>Confira data e revisão</strong><span>Os quatro nomes devem ter a mesma data e o mesmo <strong>rNN</strong>.</span></li>
+        <li><strong>Prepare a 01_ENTRADA</strong><span>Deixe o POP e somente os quatro relatórios do lote atual.</span></li>
+        <li><strong>Abra a planilha mestre</strong><span>Acesse <strong>TecnoFit_Base_Mestre</strong>.</span></li>
+        <li><strong>Abra o painel</strong><span>Menu <strong>TecnoFit › Abrir painel</strong>.</span></li>
+        <li><strong>Confirme o estado</strong><span>O painel deve informar <strong>Pronto para importar</strong>.</span></li>
+        <li><strong>Atualize uma única vez</strong><span>Clique em <strong>Atualizar base</strong>; não feche nem recarregue a planilha.</span></li>
+        <li><strong>Confira a conclusão</strong><span>Veja a mensagem de sucesso e confirme que restaram apenas este POP na entrada.</span></li>
+      </ol>
+
+      <div class="two-up">
+        <section class="revision">
+          <h2>Precisou corrigir?</h2>
+          <p>Reenvie <strong>todo o conjunto</strong> com revisão maior. Nunca misture revisões.</p>
+          <code>..._2026-08-21_r01.xls<br>↓ corrigiu algo?<br>..._2026-08-21_r02.xls</code>
+        </section>
+
+        <section class="notice">
+          <h2>Se aparecer erro</h2>
+          <ol>
+            <li>Leia a mensagem do painel.</li>
+            <li>Não edite as abas da base manualmente.</li>
+            <li>Corrija/exporte novamente na origem.</li>
+            <li>Suba os quatro arquivos com revisão superior, como <strong>r02</strong>.</li>
+          </ol>
+        </section>
+      </div>
+
+      <section class="dont">
+        <strong>!</strong>
+        <p><strong>Onde vão os arquivos?</strong> Lote concluído vai para <strong>02_PROCESSADOS</strong>. Se houver falha durante a leitura, o lote reconhecido pode ir para <strong>03_REJEITADOS</strong>. A última base válida é preservada.</p>
+      </section>
+    </main>
+
+    <div class="footer"><span>TECNOFIT_BASE_CENTRAL · uso interno</span><span>Versão 1.1 · 21/08/2026 · página 2/2</span></div>
+    <div class="rule-line"></div>
+  </section>
+</body>
+</html>

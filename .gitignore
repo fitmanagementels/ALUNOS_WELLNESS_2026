@@ -1,5 +1,11 @@
-.superpowers/
 node_modules/
-npm-debug.log*
-.DS_Store
-Thumbs.db
+.superpowers/
+.clasp.json
+.clasprc.json
+pwa/runtime-config.js
+.env
+coverage/
+*.log
+.worktrees/
+*.xls
+*.xlsx

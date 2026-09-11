@@ -3,100 +3,84 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Contexto do Projeto — XSTEAM Gestão de Agenda</title>
+  <title>Contexto do Projeto — TecnoFit / XSTEAM</title>
   <style>
-    :root { color-scheme: dark; --bg:#080b0a; --panel:#111715; --text:#f2f5f1; --muted:#a8b1ad; --accent:#d8ff16; --border:#303a36; --warn:#ffcc66; }
+    :root { color-scheme: dark; --bg:#080a0a; --panel:#121716; --text:#f1f5f1; --muted:#a0aaa5; --lime:#dfff22; --line:#303a36; }
     * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--text); font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
-    main { width:min(1080px,calc(100% - 32px)); margin:32px auto 64px; }
-    header { margin-bottom:24px; }
-    h1 { margin:0 0 6px; font-size:clamp(1.7rem,4vw,2.5rem); }
-    .eyebrow { color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
-    .meta,.muted { color:var(--muted); }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:22px 0; }
-    .card,details { background:var(--panel); border:1px solid var(--border); border-radius:14px; }
-    .card { padding:16px; }
-    .card strong { display:block; color:var(--accent); margin-bottom:5px; }
-    .attention { border-color:var(--accent); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent); }
-    details { margin:12px 0; padding:16px 18px; }
-    summary { cursor:pointer; color:var(--accent); font-weight:800; font-size:1.02rem; }
-    details > :last-child { margin-bottom:0; }
-    table { width:100%; border-collapse:collapse; margin:12px 0; font-size:.92rem; }
-    th,td { padding:9px 8px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
-    th { color:var(--accent); }
-    code { padding:2px 5px; border-radius:5px; background:#202924; color:#e9ffc2; }
-    li + li { margin-top:5px; }
-    .warning { color:var(--warn); }
-    @media (max-width:700px) { main { width:min(100% - 20px,1080px); margin-top:18px; } table { display:block; overflow-x:auto; } }
+    body { margin:0; background:radial-gradient(circle at 78% 0,rgba(223,255,34,.09),transparent 27rem),var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { width:min(1080px,calc(100% - 32px)); margin:34px auto 64px; }
+    header { padding:8px 0 24px; border-bottom:1px solid var(--line); }
+    h1 { margin:0; font-size:clamp(1.9rem,4vw,2.7rem); letter-spacing:-.045em; }
+    h2 { margin:0 0 10px; font-size:1.05rem; }
+    .meta,p,li,td { color:var(--muted); } .eyebrow,summary,.card strong { color:var(--lime); font-size:.76rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:20px 0; }
+    .card,details { border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+    .card { padding:15px; } .card strong { display:block; margin-bottom:5px; }
+    details { margin:12px 0; padding:14px 16px; } summary { cursor:pointer; } details[open] summary { margin-bottom:12px; }
+    ul,ol { padding-left:21px; } table { width:100%; border-collapse:collapse; font-size:.93rem; } th,td { padding:8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; } th { color:var(--text); }
+    code { padding:2px 5px; border-radius:4px; color:var(--lime); background:rgba(223,255,34,.09); }
+    .highlight { border-color:rgba(223,255,34,.55); }
   </style>
 </head>
 <body>
   <main>
     <header>
-      <div class="eyebrow">XSTEAM · memória portátil</div>
-      <h1>Gestão de Agenda</h1>
-      <div class="meta">Última atualização: 11/09/2026 16:08 (America/Fortaleza)</div>
+      <div class="eyebrow">Memória portátil canônica</div>
+      <h1>Base Central TecnoFit / XSTEAM</h1>
+      <div class="meta">Última atualização: 21/08/2026 — America/Fortaleza (UTC−03:00)</div>
     </header>
 
     <section class="grid" aria-label="Resumo rápido">
-      <div class="card"><strong>Objetivo</strong><span>Gerir a agenda fixa semanal sem perder preenchimentos manuais.</span></div>
-      <div class="card"><strong>Etapa atual</strong><span>Base funcional protegida por backup no GitHub.</span></div>
-      <div class="card attention"><strong>Onde parei</strong><span>Backup concluído e branch main sincronizada.</span></div>
-      <div class="card attention"><strong>Próxima ação</strong><span>Documentar instalação/deploy ou escolher a próxima evolução.</span></div>
+      <div class="card"><strong>Objetivo</strong><span>PWA operacional Wellness conectado à planilha com dados persistentes e fluxo contínuo.</span></div>
+      <div class="card"><strong>Estado</strong><span><code>main</code> em <code>6ad602f</code>; Pages e Apps Script publicados.</span></div>
+      <div class="card"><strong>Onde parei</strong><span>Perfil com Último professor, Performance e Coach concluído.</span></div>
+      <div class="card highlight"><strong>Próxima ação</strong><span>Receber as planilhas oficiais e desenhar o pacote Fluxo por blocos.</span></div>
     </section>
 
     <details open>
       <summary>Resumo executivo</summary>
       <ul>
-        <li>Aplicativo Google Apps Script ligado ao Sheets, com fluxo <code>Base -&gt; Dados -&gt; AGENDA</code>.</li>
-        <li>Oferece mapa de calor, agenda, métricas de professores, busca e edição de até seis horários por aluno.</li>
-        <li>A atualização deve sempre preservar status, horários e observações manuais pelo ID do aluno.</li>
-        <li><code>npm test</code> passou em 11/09/2026 e todo o código adequado foi versionado.</li>
-        <li>O backup está em <code>fitmanagementels/ALUNOS_WELLNESS_2026</code>, branch <code>main</code>.</li>
-        <li>Esta pasta é distinta de <code>../BASE_TECNOFIT</code>, que contém o dashboard principal e a funcionalidade de permanência.</li>
+        <li>A interface única está em <code>pwa/</code>; Apps Script é backend/planilha e Worker é a ponte pública.</li>
+        <li>O perfil de aluno começa recolhido, preserva a expansão durante o uso e salva em segundo plano.</li>
+        <li>O perfil tem responsável, múltiplos últimos professores, pagamento, etiquetas e observações.</li>
+        <li>Fluxo possui Leads e Churns persistentes; Churn já tem análise temporal, mas sua lista precisa escalar melhor.</li>
+        <li>Próxima frente: histórico oficial de churn, Alunos novos, perfil por ID, ordenações e análise temporal de Leads.</li>
       </ul>
     </details>
 
     <details>
-      <summary>Objetivo e critérios de sucesso</summary>
-      <p>O objetivo é apoiar gestores e equipe operacional da XSTEAM na agenda fixa, ocupação e carga dos professores. O projeto tem sucesso quando a aba <code>AGENDA</code> é carregada, as visões e filtros funcionam, as edições persistem e uma regeneração nunca apaga os campos manuais.</p>
-    </details>
-
-    <details open class="attention">
-      <summary>Estado atual, onde parei e como continuar</summary>
-      <ul>
-        <li>Antes do backup, a branch era <code>master</code>, o HEAD era <code>8d7ffcf</code> e quase todo o app estava fora do histórico.</li>
-        <li>Agora a branch é <code>main</code> e acompanha <code>origin/main</code>.</li>
-        <li>O remoto é <code>git@github.com:fitmanagementels/ALUNOS_WELLNESS_2026.git</code>.</li>
-        <li>O ponto completo local foi criado em <code>99b23ec</code> e os históricos foram consolidados em <code>667d348</code>.</li>
-        <li>O código pode ser recuperado pelo GitHub; falta somente documentar e automatizar o deploy Apps Script.</li>
-      </ul>
+      <summary>Objetivos e critérios de sucesso</summary>
+      <p>Manter a base semanal segura sem apagar operação manual; apoiar decisões diárias de alunos, planos, leads e churns; associar registros pelo ID; e manter o PWA rápido, instalável e confiável. Critérios: dados persistem, mudanças de contrato PWA/backend são publicadas juntas, lista não interrompe o fluxo e PII não vai para commits ou testes.</p>
     </details>
 
     <details>
-      <summary>Histórico relevante</summary>
+      <summary>Estado atual e histórico relevante</summary>
       <table>
-        <thead><tr><th>Data/commit</th><th>Mudança</th><th>Impacto</th></tr></thead>
+        <thead><tr><th>Marco</th><th>Mudança</th><th>Impacto</th></tr></thead>
         <tbody>
-          <tr><td>26/06/2026</td><td>Base funcional criada localmente</td><td>Leitura, transformação, UI e edição da agenda</td></tr>
-          <tr><td><code>0511e8d</code></td><td>Especificação de Home e Configurações</td><td>Documento destinado ao dashboard de outro repositório</td></tr>
-          <tr><td><code>8d7ffcf</code></td><td>Plano de perfis de alunos</td><td>Documento destinado ao <code>BASE_TECNOFIT</code></td></tr>
-          <tr><td>11/09/2026</td><td>Contexto canônico atualizado</td><td>Preparação do backup completo no GitHub</td></tr>
-          <tr><td><code>99b23ec</code></td><td>Código e contexto versionados</td><td>Ponto completo de restauração local</td></tr>
-          <tr><td><code>667d348</code></td><td>Históricos consolidados e enviados</td><td>Backup completo em <code>origin/main</code></td></tr>
+          <tr><td>Jul–Ago/2026</td><td>Importador, snapshots e PWA</td><td>Base operacional e navegação diária estruturadas.</td></tr>
+          <tr><td><code>f70cf86</code></td><td>Fluxo contínuo do perfil</td><td>Lista preserva expansão e modal fecha sem aguardar servidor.</td></tr>
+          <tr><td><code>3e43bee</code></td><td>Últimos professores e catálogo</td><td>Nova coluna com migração segura; Performance e Coach.</td></tr>
+          <tr><td><code>d4c1c8f</code></td><td>Seletor múltiplo compacto</td><td>Um campo para um ou vários últimos professores.</td></tr>
+          <tr><td><code>6ad602f</code></td><td>Cache e publicação</td><td>PWA <code>v10</code>, Apps Script estável versão 33; 176 testes aprovados.</td></tr>
         </tbody>
       </table>
     </details>
 
-    <details open class="attention">
+    <details open class="highlight">
+      <summary>Onde parei e como continuar</summary>
+      <p>O último marco está publicado. Ainda não iniciar importação nem criar dados de churn/alunos novos: os dois arquivos oficiais precisam ser enviados. Quando chegarem, inspecionar cabeçalhos, volumes e amostra anonimizada, desenhar mapeamento/deduplicação/reversão e só então carregar as abas persistentes.</p>
+    </details>
+
+    <details>
       <summary>Memória de decisões</summary>
       <table>
-        <thead><tr><th>Decisão</th><th>Por que</th><th>Impacto</th><th>Como retomar</th></tr></thead>
+        <thead><tr><th>Decisão</th><th>Por que</th><th>Impacto</th><th>Retomada</th></tr></thead>
         <tbody>
-          <tr><td>Preservar campos manuais pelo ID</td><td>A agenda é regenerada</td><td><code>Code.gs</code> e <code>AGENDA</code></td><td>Revisar <code>atualizarAbaAgenda()</code> e rodar testes</td></tr>
-          <tr><td>Isolar regras puras</td><td>Permite testes fora do Apps Script</td><td><code>AgendaCore.gs</code></td><td>Executar <code>npm test</code></td></tr>
-          <tr><td>Manter projetos distintos</td><td>Arquiteturas e escopos são diferentes</td><td>Todo o repositório</td><td>Confirmar o repositório antes de portar recursos</td></tr>
-          <tr><td>Planilha como fonte operacional</td><td>É o banco usado pela equipe</td><td><code>Code.gs</code></td><td>Validar abas e cabeçalhos antes do deploy</td></tr>
+          <tr><td>PWA é a interface única</td><td>Evitar cópias divergentes no Apps Script.</td><td><code>pwa/</code> é a fonte visual.</td><td>Publicar Pages após toda mudança de interface.</td></tr>
+          <tr><td>Gravação otimista</td><td>Sem pausas por latência do servidor.</td><td>Erros vão à fila global.</td><td>Não voltar a aguardar Promise no modal.</td></tr>
+          <tr><td>Último professor como lista</td><td>Um aluno pode ter mais de um, sem duas listas visíveis.</td><td><code>ultimos_professores</code> armazena JSON.</td><td>Usar catálogo controlado do status do aluno.</td></tr>
+          <tr><td>Fluxo fora do snapshot semanal</td><td>Preservar operação manual.</td><td>Leads/Churns persistem na planilha.</td><td>Novas fontes devem seguir a mesma proteção.</td></tr>
         </tbody>
       </table>
     </details>
@@ -104,64 +88,57 @@
     <details>
       <summary>Informações importantes do chat</summary>
       <ul>
-        <li>O usuário prefere execução direta e o mínimo de trabalho manual.</li>
-        <li>O contexto deve ser atualizado antes da sincronização com o GitHub.</li>
-        <li>O backup na nuvem é necessário para reduzir o risco de perda.</li>
-        <li>No projeto irmão, fichas e avaliações permanecem separadas; permanência usa data de entrada e mantém tempo de empresa e pacote atual sem estimar LTV histórico.</li>
+        <li>Home inicia com Matriculados e XSTEAM Wellness Club.</li>
+        <li>WhatsApp deve abrir a conversa específica do aluno.</li>
+        <li>Novas planilhas serão carregadas pelo assistente para evitar transcrição manual.</li>
+        <li>Churn precisa reutilizar o perfil do aluno pelo ID e organizar uma lista que cresce conforme o preenchimento.</li>
+        <li>Todas as listagens de alunos devem futuramente permitir ordenação alfabética e por data de referência apropriada.</li>
       </ul>
     </details>
 
     <details>
-      <summary>Arquitetura, dados e regras centrais</summary>
+      <summary>Próximos blocos de trabalho</summary>
       <ol>
-        <li><code>atualizarAbaDados()</code> filtra o polo e mantém o registro mais recente por ID.</li>
-        <li><code>atualizarAbaAgenda()</code> gera <code>AGENDA</code> e reaplica os campos manuais.</li>
-        <li><code>AgendaCore</code> prepara alunos, aulas, filtros, ocupação e métricas.</li>
-        <li>O frontend usa <code>google.script.run</code>.</li>
-        <li><code>saveAgendaStudent()</code> usa lock e atualiza somente os campos manuais.</li>
+        <li>Histórico oficial de cancelamentos: carga pontual em aba persistente, sem importador semanal.</li>
+        <li>Subaba Fluxo / Alunos novos: schema, aba e carga da planilha fornecida.</li>
+        <li>Perfil de churn: abrir ficha de aluno pelo ID e mostrar planos somente se houver fonte histórica confiável.</li>
+        <li>UX de Churn: busca/filtros/ordenação e visualização densa sem modal infinito.</li>
+        <li>Ordenação comum em listagens de alunos: A–Z e data contextual.</li>
+        <li>Análise temporal de Leads: equivalente conceitual a Churn, com janela inicial curta.</li>
       </ol>
-      <p>Um slot só vira aula com professor, dia e hora. O modelo aceita seis slots por aluno e a capacidade visual padrão é 10.</p>
     </details>
 
     <details>
-      <summary>Etapa atual e arquivos ativos</summary>
+      <summary>Arquivos ativos</summary>
       <table>
-        <thead><tr><th>Caminho</th><th>Função</th><th>Observação</th></tr></thead>
+        <thead><tr><th>Caminho</th><th>Função</th></tr></thead>
         <tbody>
-          <tr><td><code>Appscript/AgendaCore.gs</code></td><td>Regras e métricas</td><td>Núcleo testável</td></tr>
-          <tr><td><code>Appscript/Code.gs</code></td><td>Sheets, menu e salvamento</td><td>Backend Apps Script</td></tr>
-          <tr><td><code>Appscript/Index.html</code></td><td>Estrutura da UI</td><td>Inclui CSS e JS</td></tr>
-          <tr><td><code>Appscript/Script.html</code></td><td>Frontend</td><td>Estado, filtros e renderização</td></tr>
-          <tr><td><code>Appscript/Styles.html</code></td><td>Visual e responsividade</td><td>Marca XSTEAM</td></tr>
-          <tr><td><code>tests/agendaCore.test.js</code></td><td>Teste automatizado</td><td>Rodar com <code>npm test</code></td></tr>
+          <tr><td><code>apps-script/00_Config.gs</code></td><td>Schemas e abas.</td></tr>
+          <tr><td><code>apps-script/14_DashboardMutacoes.gs</code></td><td>Gravação idempotente.</td></tr>
+          <tr><td><code>apps-script/15_DashboardFluxo.gs</code></td><td>Dados e análises de Fluxo.</td></tr>
+          <tr><td><code>apps-script/18_DashboardPerfisAlunos.gs</code></td><td>Perfil persistente e catálogo.</td></tr>
+          <tr><td><code>pwa/js/dashboard.js</code></td><td>Fluxo, listas, gráficos e fila.</td></tr>
+          <tr><td><code>pwa/js/student-profiles.js</code></td><td>Ficha de aluno e Último professor.</td></tr>
+          <tr><td><code>pwa/sw.js</code></td><td>Cache atual <code>xsteam-static-v10</code>.</td></tr>
+          <tr><td><code>tests/</code></td><td>Regressões; executar <code>npm test</code>.</td></tr>
         </tbody>
       </table>
     </details>
 
     <details>
-      <summary>Próximos passos</summary>
-      <ol>
-        <li>Criar README de instalação, estrutura das abas, teste e publicação.</li>
-        <li>Configurar o vínculo <code>clasp</code> sem expor credenciais.</li>
-        <li>Ampliar testes do backend e contratos essenciais da interface.</li>
-        <li>Decidir se a Gestão de Agenda continuará separada do dashboard principal.</li>
-      </ol>
-    </details>
-
-    <details>
       <summary>Riscos, bloqueios e pendências</summary>
       <ul>
-        <li>Risco de aplicar nesta pasta planos que pertencem ao <code>BASE_TECNOFIT</code>.</li>
-        <li>Risco principal de regressão: apagar dados manuais ao atualizar <code>AGENDA</code>.</li>
-        <li>Não versionar dados pessoais, planilhas reais, credenciais ou artefatos temporários.</li>
-        <li>Não há bloqueio para recuperar o código; faltam vínculo Apps Script, documentação de implantação e testes além do núcleo.</li>
-        <li>A implantação Apps Script, sua URL e a planilha de produção desta versão não estão documentadas.</li>
+        <li>Planilhas oficiais ainda não foram anexadas; não inferir dados ou cabeçalhos.</li>
+        <li>“Planos nos tempos” exige fonte histórica real, não apenas o contrato atual do snapshot.</li>
+        <li>Listas longas de Churn pedem estratégia explícita de busca, filtros e/ou paginação.</li>
+        <li>Não expor telefone nem arquivos operacionais em commits, documentação ou testes.</li>
+        <li>Mudanças de contrato exigem deploy de PWA e Apps Script; preservar arquivos não rastreados do usuário.</li>
       </ul>
     </details>
 
-    <details open class="attention">
+    <details>
       <summary>Contexto para outro chat ou IA</summary>
-      <p><strong>Objetivo:</strong> manter uma Gestão de Agenda em Apps Script/Sheets sem perder preenchimentos manuais. <strong>Estado:</strong> teste aprovado e backup em <code>fitmanagementels/ALUNOS_WELLNESS_2026</code>, branch <code>main</code>. <strong>Leia:</strong> este contexto, <code>Code.gs</code>, <code>AgendaCore.gs</code>, <code>Script.html</code> e o teste. <strong>Não desfaça:</strong> preservação por ID, regras puras testáveis e separação do dashboard <code>BASE_TECNOFIT</code>. <strong>Próxima ação:</strong> documentar o deploy ou escolher a próxima evolução. <strong>Confirme antes de agir:</strong> URL/ID Apps Script, planilha de produção e decisão de integração.</p>
+      <p>Base Central TecnoFit com PWA XSTEAM para Wellness. <code>main</code> está em <code>6ad602f</code>; Pages usa cache <code>v10</code>; Apps Script estável é versão 33; 176 testes passaram. Não desfazer gravação otimista nem o estado preservado da lista de perfis. Próximo pacote é Fluxo e depende de duas planilhas que o usuário enviará: histórico oficial de churn e alunos novos. Projetar e aprovar cada subbloco antes de alterar schema/carga; não inventar história de planos; preservar PII e arquivos não rastreados.</p>
     </details>
   </main>
 </body>
