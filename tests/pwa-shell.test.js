@@ -15,7 +15,7 @@ test('shell PWA inicia sem login Google e possui manifesto e service worker', ()
   assert.equal(manifest.display, 'standalone');
   assert.equal(manifest.icons[0].src, './assets/xsteam-gestao-icon.svg');
   assert.match(appIcon, /data-variant="gestao"/);
-  assert.match(worker, /xsteam-static-v11/);
+  assert.match(worker, /xsteam-static-v12/);
   assert.match(worker, /\.\/css\/student-profiles\.css/);
   assert.match(worker, /\.\/css\/permanencia\.css/);
   assert.match(worker, /\.\/js\/student-profiles\.js/);

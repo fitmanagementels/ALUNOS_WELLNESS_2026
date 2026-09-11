@@ -31,7 +31,7 @@
 | Fonte migrada | `fitmanagementels/BASE_TECNOFIT_WELLNESS`, commit `bc378e7` |
 | Migração local | Commit `c24d950`, a enviar ao remoto no encerramento deste marco |
 | Testes | `npm test`: 200 aprovados, 0 falhas |
-| PWA | Código completo em `pwa/`; cache `xsteam-static-v11` |
+| PWA | Código completo em `pwa/`; cache `xsteam-static-v12` |
 | Novo endereço esperado | `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/` |
 | Endereço anterior | `https://fitmanagementels.github.io/BASE_TECNOFIT_WELLNESS/`, mantido como redundância |
 | Backend | Worker e Apps Script existentes continuam usados; último deploy Apps Script conhecido: versão 38 |
@@ -148,7 +148,7 @@ Na carga inicial validada de permanência foram processados 980 registros; 314 I
 | `pwa/index.html` | Shell do PWA | Interface pública principal |
 | `pwa/js/dashboard.js` | Navegação e visões | Home, Financeiro, Acompanhamento, Fluxo e Configurações |
 | `pwa/js/permanencia.js` | Interface de permanência | Não calcula LTV estimado |
-| `pwa/sw.js` | Cache instalável | `xsteam-static-v11` |
+| `pwa/sw.js` | Cache instalável | `xsteam-static-v12` |
 | `worker/src/index.js` | Ponte pública segura | Valida origem e ações |
 | `.github/workflows/deploy-pages.yml` | Publicação do PWA | Usa Worker atual como fallback |
 | `tests/` | Regressões automatizadas | Executar `npm test` |
