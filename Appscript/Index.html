@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#dfff2f">
+    <title>XSTEAM | Gestão de Agenda</title>
+    <?!= include('Styles'); ?>
+  </head>
+  <body>
+    <div class="app-shell" id="appShell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand-block">
+          <div class="brand-copy">
+            <strong>XSTEAM</strong>
+            <span>Wellness Club</span>
+          </div>
+        </div>
+        <nav class="main-nav" aria-label="Navegação principal">
+          <button class="nav-item active" type="button"><span>Gestão de Agenda</span></button>
+          <button class="nav-item muted" type="button"><span>Professores</span></button>
+          <button class="nav-item muted" type="button"><span>Performance</span></button>
+          <button class="nav-item muted" type="button"><span>Operação</span></button>
+        </nav>
+        <button class="collapse-btn" type="button" id="collapseSidebar" aria-label="Alternar menu">
+          <span></span><span></span><span></span>
+        </button>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Agenda fixa semanal</p>
+            <h1>Gestão de Agenda</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-btn" type="button" id="refreshBtn">Atualizar</button>
+            <div class="sync-state" id="syncState">Carregando</div>
+          </div>
+        </header>
+
+        <section class="filters-band" id="filtersBand" aria-label="Filtros">
+          <div class="filters-head">
+            <div>
+              <span>Filtros</span>
+              <strong id="filtersSummary">Ativo · Todos professores</strong>
+            </div>
+            <button class="filter-toggle" type="button" id="filterToggle" aria-expanded="true">Ocultar</button>
+          </div>
+          <div class="filters-body" id="filtersBody">
+            <div class="filter-group">
+              <label>Buscar aluno</label>
+              <input id="searchInput" type="search" placeholder="Nome ou ID">
+            </div>
+            <div class="filter-group wide">
+              <label>Status</label>
+              <div class="chip-row" id="statusChips"></div>
+            </div>
+            <div class="filter-group wide">
+              <label>Professor</label>
+              <div class="chip-row" id="professorChips"></div>
+            </div>
+          </div>
+        </section>
+
+        <nav class="subtabs" aria-label="Subabas de gestão">
+          <button class="subtab active" data-tab="heatmap" type="button">Mapa de Calor</button>
+          <button class="subtab" data-tab="agenda" type="button">Agenda</button>
+          <button class="subtab" data-tab="teachers" type="button">Professores</button>
+          <button class="subtab" data-tab="students" type="button">Alunos</button>
+        </nav>
+
+        <section class="view" id="viewRoot"></section>
+      </main>
+    </div>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+    <aside class="student-drawer" id="studentDrawer" hidden aria-label="Ficha do aluno">
+      <form id="studentForm">
+        <div class="drawer-header">
+          <div>
+            <p class="eyebrow">Aluno</p>
+            <h2 id="drawerStudentName">Ficha</h2>
+            <span id="drawerStudentId"></span>
+          </div>
+          <button class="icon-btn" type="button" id="closeDrawer" aria-label="Fechar">×</button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Status
+            <input id="statusInput" list="statusList" name="status" autocomplete="off">
+          </label>
+          <label>
+            Observações
+            <textarea id="observationsInput" name="observations" rows="3"></textarea>
+          </label>
+        </div>
+
+        <div class="slot-editor" id="slotEditor"></div>
+
+        <div class="drawer-actions">
+          <button class="ghost-btn" type="button" id="cancelEdit">Cancelar</button>
+          <button class="primary-btn" type="submit" id="saveStudent">Salvar</button>
+        </div>
+      </form>
+    </aside>
+
+    <datalist id="statusList"></datalist>
+    <datalist id="professorList"></datalist>
+    <datalist id="dayList"></datalist>
+    <datalist id="timeList"></datalist>
+    <div class="toast" id="toast" hidden></div>
+
+    <?!= include('Script'); ?>
+  </body>
+</html>

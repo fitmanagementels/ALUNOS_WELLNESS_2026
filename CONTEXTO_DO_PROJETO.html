@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contexto do Projeto — XSTEAM Gestão de Agenda</title>
+  <style>
+    :root { color-scheme: dark; --bg:#080b0a; --panel:#111715; --text:#f2f5f1; --muted:#a8b1ad; --accent:#d8ff16; --border:#303a36; --warn:#ffcc66; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { width:min(1080px,calc(100% - 32px)); margin:32px auto 64px; }
+    header { margin-bottom:24px; }
+    h1 { margin:0 0 6px; font-size:clamp(1.7rem,4vw,2.5rem); }
+    .eyebrow { color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    .meta,.muted { color:var(--muted); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:22px 0; }
+    .card,details { background:var(--panel); border:1px solid var(--border); border-radius:14px; }
+    .card { padding:16px; }
+    .card strong { display:block; color:var(--accent); margin-bottom:5px; }
+    .attention { border-color:var(--accent); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent); }
+    details { margin:12px 0; padding:16px 18px; }
+    summary { cursor:pointer; color:var(--accent); font-weight:800; font-size:1.02rem; }
+    details > :last-child { margin-bottom:0; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; font-size:.92rem; }
+    th,td { padding:9px 8px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
+    th { color:var(--accent); }
+    code { padding:2px 5px; border-radius:5px; background:#202924; color:#e9ffc2; }
+    li + li { margin-top:5px; }
+    .warning { color:var(--warn); }
+    @media (max-width:700px) { main { width:min(100% - 20px,1080px); margin-top:18px; } table { display:block; overflow-x:auto; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">XSTEAM · memória portátil</div>
+      <h1>Gestão de Agenda</h1>
+      <div class="meta">Última atualização: 11/09/2026 16:08 (America/Fortaleza)</div>
+    </header>
+
+    <section class="grid" aria-label="Resumo rápido">
+      <div class="card"><strong>Objetivo</strong><span>Gerir a agenda fixa semanal sem perder preenchimentos manuais.</span></div>
+      <div class="card"><strong>Etapa atual</strong><span>Organização do versionamento e backup em nuvem.</span></div>
+      <div class="card attention"><strong>Onde parei</strong><span>Preparando o primeiro backup completo desta pasta.</span></div>
+      <div class="card attention"><strong>Próxima ação</strong><span>Configurar/confirmar remoto, versionar e validar o commit no GitHub.</span></div>
+    </section>
+
+    <details open>
+      <summary>Resumo executivo</summary>
+      <ul>
+        <li>Aplicativo Google Apps Script ligado ao Sheets, com fluxo <code>Base -&gt; Dados -&gt; AGENDA</code>.</li>
+        <li>Oferece mapa de calor, agenda, métricas de professores, busca e edição de até seis horários por aluno.</li>
+        <li>A atualização deve sempre preservar status, horários e observações manuais pelo ID do aluno.</li>
+        <li><code>npm test</code> passou em 11/09/2026.</li>
+        <li class="warning">Antes do backup solicitado, quase todo o código estava fora do histórico e não havia remoto Git configurado.</li>
+        <li>Esta pasta é distinta de <code>../BASE_TECNOFIT</code>, que contém o dashboard principal e a funcionalidade de permanência.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Objetivo e critérios de sucesso</summary>
+      <p>O objetivo é apoiar gestores e equipe operacional da XSTEAM na agenda fixa, ocupação e carga dos professores. O projeto tem sucesso quando a aba <code>AGENDA</code> é carregada, as visões e filtros funcionam, as edições persistem e uma regeneração nunca apaga os campos manuais.</p>
+    </details>
+
+    <details open class="attention">
+      <summary>Estado atual, onde parei e como continuar</summary>
+      <ul>
+        <li>Branch antes do backup: <code>master</code>; HEAD: <code>8d7ffcf</code>.</li>
+        <li>Somente três documentos de design estavam rastreados.</li>
+        <li><code>Appscript/</code>, testes e configurações estavam sem rastreamento.</li>
+        <li>Não havia remoto <code>origin</code> nem <code>.clasp.json</code>.</li>
+        <li>O inventário e o teste já foram concluídos; falta criar/confirmar o remoto, commitar, enviar e comparar o hash remoto.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Histórico relevante</summary>
+      <table>
+        <thead><tr><th>Data/commit</th><th>Mudança</th><th>Impacto</th></tr></thead>
+        <tbody>
+          <tr><td>26/06/2026</td><td>Base funcional criada localmente</td><td>Leitura, transformação, UI e edição da agenda</td></tr>
+          <tr><td><code>0511e8d</code></td><td>Especificação de Home e Configurações</td><td>Documento destinado ao dashboard de outro repositório</td></tr>
+          <tr><td><code>8d7ffcf</code></td><td>Plano de perfis de alunos</td><td>Documento destinado ao <code>BASE_TECNOFIT</code></td></tr>
+          <tr><td>11/09/2026</td><td>Contexto canônico atualizado</td><td>Preparação do backup completo no GitHub</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details open class="attention">
+      <summary>Memória de decisões</summary>
+      <table>
+        <thead><tr><th>Decisão</th><th>Por que</th><th>Impacto</th><th>Como retomar</th></tr></thead>
+        <tbody>
+          <tr><td>Preservar campos manuais pelo ID</td><td>A agenda é regenerada</td><td><code>Code.gs</code> e <code>AGENDA</code></td><td>Revisar <code>atualizarAbaAgenda()</code> e rodar testes</td></tr>
+          <tr><td>Isolar regras puras</td><td>Permite testes fora do Apps Script</td><td><code>AgendaCore.gs</code></td><td>Executar <code>npm test</code></td></tr>
+          <tr><td>Manter projetos distintos</td><td>Arquiteturas e escopos são diferentes</td><td>Todo o repositório</td><td>Confirmar o repositório antes de portar recursos</td></tr>
+          <tr><td>Planilha como fonte operacional</td><td>É o banco usado pela equipe</td><td><code>Code.gs</code></td><td>Validar abas e cabeçalhos antes do deploy</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details>
+      <summary>Informações importantes do chat</summary>
+      <ul>
+        <li>O usuário prefere execução direta e o mínimo de trabalho manual.</li>
+        <li>O contexto deve ser atualizado antes da sincronização com o GitHub.</li>
+        <li>O backup na nuvem é necessário para reduzir o risco de perda.</li>
+        <li>No projeto irmão, fichas e avaliações permanecem separadas; permanência usa data de entrada e mantém tempo de empresa e pacote atual sem estimar LTV histórico.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Arquitetura, dados e regras centrais</summary>
+      <ol>
+        <li><code>atualizarAbaDados()</code> filtra o polo e mantém o registro mais recente por ID.</li>
+        <li><code>atualizarAbaAgenda()</code> gera <code>AGENDA</code> e reaplica os campos manuais.</li>
+        <li><code>AgendaCore</code> prepara alunos, aulas, filtros, ocupação e métricas.</li>
+        <li>O frontend usa <code>google.script.run</code>.</li>
+        <li><code>saveAgendaStudent()</code> usa lock e atualiza somente os campos manuais.</li>
+      </ol>
+      <p>Um slot só vira aula com professor, dia e hora. O modelo aceita seis slots por aluno e a capacidade visual padrão é 10.</p>
+    </details>
+
+    <details>
+      <summary>Etapa atual e arquivos ativos</summary>
+      <table>
+        <thead><tr><th>Caminho</th><th>Função</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td><code>Appscript/AgendaCore.gs</code></td><td>Regras e métricas</td><td>Núcleo testável</td></tr>
+          <tr><td><code>Appscript/Code.gs</code></td><td>Sheets, menu e salvamento</td><td>Backend Apps Script</td></tr>
+          <tr><td><code>Appscript/Index.html</code></td><td>Estrutura da UI</td><td>Inclui CSS e JS</td></tr>
+          <tr><td><code>Appscript/Script.html</code></td><td>Frontend</td><td>Estado, filtros e renderização</td></tr>
+          <tr><td><code>Appscript/Styles.html</code></td><td>Visual e responsividade</td><td>Marca XSTEAM</td></tr>
+          <tr><td><code>tests/agendaCore.test.js</code></td><td>Teste automatizado</td><td>Rodar com <code>npm test</code></td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details>
+      <summary>Próximos passos</summary>
+      <ol>
+        <li>Concluir e verificar o backup desta pasta no GitHub.</li>
+        <li>Criar README de instalação, estrutura das abas, teste e publicação.</li>
+        <li>Configurar o vínculo <code>clasp</code> sem expor credenciais.</li>
+        <li>Ampliar testes do backend e contratos essenciais da interface.</li>
+        <li>Decidir se a Gestão de Agenda continuará separada do dashboard principal.</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>Riscos, bloqueios e pendências</summary>
+      <ul>
+        <li>Risco de aplicar nesta pasta planos que pertencem ao <code>BASE_TECNOFIT</code>.</li>
+        <li>Risco principal de regressão: apagar dados manuais ao atualizar <code>AGENDA</code>.</li>
+        <li>Não versionar dados pessoais, planilhas reais, credenciais ou artefatos temporários.</li>
+        <li>Faltam vínculo Apps Script, documentação de implantação e testes além do núcleo.</li>
+        <li>A implantação Apps Script, sua URL e a planilha de produção desta versão não estão documentadas.</li>
+      </ul>
+    </details>
+
+    <details open class="attention">
+      <summary>Contexto para outro chat ou IA</summary>
+      <p><strong>Objetivo:</strong> manter uma Gestão de Agenda em Apps Script/Sheets sem perder preenchimentos manuais. <strong>Leia:</strong> este contexto, <code>Code.gs</code>, <code>AgendaCore.gs</code>, <code>Script.html</code> e o teste. <strong>Não desfaça:</strong> preservação por ID, regras puras testáveis e separação do dashboard <code>BASE_TECNOFIT</code>. <strong>Próxima ação:</strong> verificar Git/remote e seguir o primeiro item pendente. <strong>Confirme antes de agir:</strong> URL/ID Apps Script, planilha de produção e decisão de integração.</p>
+    </details>
+  </main>
+</body>
+</html>
