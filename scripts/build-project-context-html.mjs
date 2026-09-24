@@ -42,7 +42,7 @@ const html = `<!doctype html>
   </style>
 </head>
 <body>
-  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 24/09/2026 09:10 · PWA operacional + dashboard · migração Cloudflare em desenvolvimento</p></div></header>
+  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 24/09/2026 09:20 · PWA operacional + dashboard · migração Cloudflare em desenvolvimento</p></div></header>
   <main class="shell">
     <section class="cards" aria-label="Resumo rápido">
       <div class="card"><strong>Produção</strong><span>Arquitetura Google antiga permanece ativa e funcional.</span></div>

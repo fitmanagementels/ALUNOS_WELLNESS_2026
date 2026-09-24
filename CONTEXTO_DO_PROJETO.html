@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 24/09/2026 09:10 · PWA operacional + dashboard · migração Cloudflare em desenvolvimento</p></div></header>
+  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 24/09/2026 09:20 · PWA operacional + dashboard · migração Cloudflare em desenvolvimento</p></div></header>
   <main class="shell">
     <section class="cards" aria-label="Resumo rápido">
       <div class="card"><strong>Produção</strong><span>Arquitetura Google antiga permanece ativa e funcional.</span></div>
@@ -36,7 +36,7 @@
   <div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="viewerTitle"><button class="backdrop" id="closeBackdrop" type="button" aria-label="Fechar"></button><section class="panel"><header class="panel-head"><div><strong id="viewerTitle">Markdown canônico</strong><div class="meta">Conteúdo integral do arquivo</div></div><button class="button" id="close" type="button">Fechar</button></header><textarea id="viewerText" readonly></textarea><footer class="panel-foot"><button class="button primary" id="copyMarkdown" type="button">Copiar Markdown</button></footer></section></div>
   <textarea id="markdownSource" hidden># Contexto do Projeto — XSTEAM Gestão / Base Central TecnoFit
 
-Última atualização: **24/09/2026 09:10 — America/Fortaleza (UTC−03:00)**
+Última atualização: **24/09/2026 09:20 — America/Fortaleza (UTC−03:00)**
 Perfil detectado: **PWA operacional com dashboard de gestão**
 Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeiros e de acompanhamento, lote semanal de relatórios e persistência operacional.
 
@@ -51,7 +51,7 @@ Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeir
 - Está em desenvolvimento uma migração integral para Cloudflare: um Worker entregará o PWA e a API no mesmo domínio; D1 será a fonte única; R2 guardará arquivos e backups; Cloudflare Access fará a autenticação.
 - O código local/versionado já contém a fundação do runtime, esquema D1, validação de Access, bootstrap, API same-origin, mutações idempotentes e análise de Churn. Isso ainda **não representa uma versão implantável ou pronta para corte**.
 - O D1 remoto `xsteam-gestao` recebeu as migrações `0001`–`0004` e a carga inicial validada: 316 alunos, 321 contratos, 21 perfis manuais, 162 churns oficiais conciliados por ID e 231 novos alunos válidos.
-- O R2 ainda não está habilitado na conta Cloudflare. O Worker `xsteam-gestao` ainda não existe remotamente e o Access de produção não foi configurado.
+- O R2 ainda não está habilitado na conta Cloudflare. O Worker `xsteam-gestao` existe em modo temporário seguro no endereço `https://xsteam-gestao.fitmanagement-els.workers.dev`: retorna HTTP 503 sem assets, D1 ou R2; o Access de produção ainda não foi configurado.
 - A suíte local passou com **35 testes, 0 falhas** após a carga D1, a subaba de alunos novos e a fila persistente. O PWA same-origin ainda não foi publicado porque o corte depende de R2 e Access.
 - A implementação D1 possui incompatibilidades confirmadas antes do primeiro deploy: consulta inválida de etiquetas, DTOs de datas/contratos/eventos diferentes do contrato consumido pelo PWA e ausência de uma versão global que mude após mutações manuais.
 - A Task 6 começou em outro chat e está visível somente no working tree: há um gerador de seed XLSX→SQL, teste com planilhas sintéticas e a dependência `xlsx`; o reconciliador previsto pelo plano ainda não existe. Esse trabalho não foi tratado como concluído nem como commitado nesta revisão.
@@ -74,6 +74,7 @@ Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeir
 | Novo backend | **Parcial.** Roteador D1, bootstrap, mutações e análise de Churn existem e passam em testes unitários, mas ainda têm incompatibilidades de integração. |
 | D1 remoto | **Migrado e validado por contagens.** Banco `xsteam-gestao` com migrações `0001`–`0004`, 316 alunos, 321 contratos, 21 perfis, 162 churns e 231 novos alunos. |
 | R2 | **Bloqueado.** API Cloudflare retornou código `10042`: R2 precisa ser habilitado no painel. Nenhum bucket foi criado. |
+| Worker temporário | **Publicado e verificado.** `xsteam-gestao` responde HTTP 503 sem assets nem bindings de dados, aguardando Cloudflare Access. |
 | Worker novo | **Não implantado.** A Cloudflare respondeu que o script `xsteam-gestao` não existe na conta (`10007`). |
 | Cloudflare Access | Código de validação pronto; configuração remota, `ACCESS_TEAM_DOMAIN` e `ACCESS_AUD` ainda não confirmados. |
 | Testes locais | No marco `c909a55`, a revisão anterior registrou **218 testes, 0 falhas**. Com o rascunho da Task 6 no working tree, nova execução de `npm test` em 24/09/2026 reportou **34 arquivos/testes de topo aprovados, 0 falhas**, incluindo `data-migration.test.js`; `git diff --check` sem erro. As contagens usam granularidades diferentes e não devem ser comparadas como regressão. |
@@ -301,7 +302,7 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 - **O que está sendo feito:** o código já troca o proxy por serviços D1 e o PWA por API same-origin. A carga inicial oficial foi gerada a partir das exportações e aplicada ao D1 remoto; a etapa corrente é a publicação segura.
 - **Arquivos ativos:** `worker/src/`, `worker/migrations/`, `tests/cloudflare/`, `pwa/js/api.js`, `pwa/sw.js` e `scripts/build-d1-seed.js` sustentam o runtime e a carga inicial.
 - **O que já está pronto:** esquema relacional, autenticação por JWT Access no código, bootstrap, roteador das quatro ações, mutações, análise de Churn, cliente same-origin e carga inicial D1. A suíte atual reportou 34 arquivos/testes de topo aprovados e nenhuma falha.
-- **O que ainda falta imediatamente:** configurar o Access real, habilitar R2, criar o bucket, publicar o Worker protegido e executar a validação de corte. O reconciliador recorrente, importação pelo PWA e backups permanecem pendentes.
+- **O que ainda falta imediatamente:** configurar o Access real, habilitar R2, criar o bucket, publicar o runtime completo protegido e executar a validação de corte. O Worker temporário já existe, mas não entrega o PWA nem acessa dados. O reconciliador recorrente, importação pelo PWA e backups permanecem pendentes.
 - **Cuidado ao continuar:** a produção antiga está ativa; não publicar o PWA same-origin no GitHub Pages e não implantar `xsteam-gestao` com dados reais antes dos gates.
 
 ## Riscos, bloqueios, divergências e pendências
@@ -309,7 +310,7 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 ### Bloqueios externos
 
 - **Confirmado — R2:** a conta ainda não habilitou R2; a API retornou `10042`. Tasks 9 e 11 dependem disso.
-- **Confirmado — Worker novo:** `xsteam-gestao` ainda não possui deployment remoto (`10007`).
+- **Confirmado — Worker temporário:** `xsteam-gestao` foi publicado em 24/09/2026 com a versão `af497def-bc8f-4ddd-ab95-13a566c8f137`. A verificação HTTP retornou 503 e a mensagem segura esperada; não há assets, D1 ou R2 no arquivo de deploy temporário.
 - **A confirmar — Access:** IdP, aplicação Access, audiência e domínio de equipe ainda não foram comprovados remotamente.
 
 ### Incompatibilidades técnicas confirmadas
@@ -424,7 +425,7 @@ O lote operacional atual contém exatamente quatro relatórios: vencimentos, fic
 
 **Confirmado:** `scripts/build-d1-seed.js` lê a exportação mestra e os relatórios oficiais de Churns e novos alunos, preserva campos manuais por ID e produz SQL privado. A ferramenta recusa saída dentro do repositório, cria o arquivo com permissão `0600` e imprime somente contagens. `tests/cloudflare/data-migration.test.js` usa planilhas sintéticas para verificar precedência dos dados oficiais e preservação de observações, etiquetas e retenção manuais. A carga inicial foi testada em D1 local e aplicada ao D1 remoto, onde as contagens foram confirmadas. O reconciliador exigido pelo plano ainda não foi criado; por isso a Task 6 permanece parcial para cargas futuras.
 
-**Confirmado:** o D1 remoto `xsteam-gestao` existe. As migrações `0001_core.sql` a `0004_tags.sql` foram aplicadas e a carga inicial recebeu 316 alunos, 321 contratos, 21 perfis, 162 churns oficiais e 231 novos alunos válidos. O R2 não está habilitado e não existe bucket. O Worker `xsteam-gestao` não possui deployment remoto. A configuração efetiva de Cloudflare Access ainda não foi comprovada.
+**Confirmado:** o D1 remoto `xsteam-gestao` existe. As migrações `0001_core.sql` a `0004_tags.sql` foram aplicadas e a carga inicial recebeu 316 alunos, 321 contratos, 21 perfis, 162 churns oficiais e 231 novos alunos válidos. O R2 não está habilitado e não existe bucket. O Worker `xsteam-gestao` possui somente um deployment temporário sem dados, retornando 503; a configuração efetiva de Cloudflare Access ainda não foi comprovada.
 
 ### Modelo de dados e associações
 
@@ -482,7 +483,7 @@ O lote operacional atual contém exatamente quatro relatórios: vencimentos, fic
 
 **Confirmado:** `scripts/build-d1-seed.js` lê a exportação mestra e os relatórios oficiais de Churns e novos alunos, preserva campos manuais por ID e produz SQL privado. A ferramenta recusa saída dentro do repositório, cria o arquivo com permissão `0600` e imprime somente contagens. `tests/cloudflare/data-migration.test.js` usa planilhas sintéticas para verificar precedência dos dados oficiais e preservação de observações, etiquetas e retenção manuais. A carga inicial foi testada em D1 local e aplicada ao D1 remoto, onde as contagens foram confirmadas. O reconciliador exigido pelo plano ainda não foi criado; por isso a Task 6 permanece parcial para cargas futuras.
 
-**Confirmado:** o D1 remoto `xsteam-gestao` existe. As migrações `0001_core.sql` a `0004_tags.sql` foram aplicadas e a carga inicial recebeu 316 alunos, 321 contratos, 21 perfis, 162 churns oficiais e 231 novos alunos válidos. O R2 não está habilitado e não existe bucket. O Worker `xsteam-gestao` não possui deployment remoto. A configuração efetiva de Cloudflare Access ainda não foi comprovada.
+**Confirmado:** o D1 remoto `xsteam-gestao` existe. As migrações `0001_core.sql` a `0004_tags.sql` foram aplicadas e a carga inicial recebeu 316 alunos, 321 contratos, 21 perfis, 162 churns oficiais e 231 novos alunos válidos. O R2 não está habilitado e não existe bucket. O Worker `xsteam-gestao` possui somente um deployment temporário sem dados, retornando 503; a configuração efetiva de Cloudflare Access ainda não foi comprovada.
 
 ### Modelo de dados e associações
 
