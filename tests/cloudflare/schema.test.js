@@ -4,14 +4,17 @@ const fs = require('node:fs');
 
 const requiredTables = [
   'students', 'contracts', 'prescriptions', 'assessments', 'permanence',
-  'permanence_events', 'student_profiles', 'student_last_teachers', 'tag_groups',
+  'permanence_events', 'student_profiles', 'student_last_teachers', 'profile_catalog', 'tag_groups',
   'tags', 'student_tags', 'leads', 'churns', 'new_students', 'settings',
   'import_batches', 'import_files', 'import_rows', 'import_errors', 'mutation_log',
   'data_versions', 'usage_counters'
 ];
 
 test('schema D1 contém entidades, preservação manual e versionamento ativo', () => {
-  const core = fs.readFileSync('worker/migrations/0001_core.sql', 'utf8');
+  const core = [
+    fs.readFileSync('worker/migrations/0001_core.sql', 'utf8'),
+    fs.readFileSync('worker/migrations/0003_profile_catalog.sql', 'utf8')
+  ].join('\n');
   const indexes = fs.readFileSync('worker/migrations/0002_indexes.sql', 'utf8');
 
   requiredTables.forEach((table) => {
