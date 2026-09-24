@@ -29,6 +29,19 @@ test('autentica somente e-mail permitido pelo JWT do Access', async () => {
   assert.deepEqual(identity, { email: 'elohimlima15@gmail.com' });
 });
 
+test('usa a identidade já validada pelo Access do Worker sem exigir variáveis de JWT', async () => {
+  const { authenticate } = await import('../../worker/src/auth.js');
+  const identity = await authenticate(new Request('https://xsteam-gestao.example/api'), {
+    ALLOWED_EMAILS: 'fitmanagement.els@gmail.com,elohimlima15@gmail.com'
+  }, {}, {
+    access: {
+      aud: 'worker-audience',
+      getIdentity: async () => ({ email: 'fitmanagement.els@gmail.com' })
+    }
+  });
+  assert.deepEqual(identity, { email: 'fitmanagement.els@gmail.com' });
+});
+
 test('rejeita requisição sem JWT, JWT inválido e e-mail externo', async () => {
   const { authenticate } = await import('../../worker/src/auth.js');
   await assert.rejects(

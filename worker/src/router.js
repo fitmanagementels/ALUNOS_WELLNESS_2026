@@ -22,14 +22,14 @@ async function parseBody(request) {
   }
 }
 
-export async function handleApiRequest(request, env, deps = {}) {
+export async function handleApiRequest(request, env, deps = {}, context) {
   const url = new URL(request.url);
   if (url.pathname !== '/api') return apiError('NOT_FOUND', 'Rota não encontrada.', 404);
   if (request.method !== 'POST') return apiError('METHOD_NOT_ALLOWED', 'Use POST.', 405);
 
   let actor;
   try {
-    actor = await (deps.authenticate || authenticateAccess)(request, env);
+    actor = await (deps.authenticate || authenticateAccess)(request, env, {}, context);
   } catch (error) {
     return apiError(error.code || 'AUTH_INVALID', error.message || 'Não foi possível validar o acesso.', error.status || 401);
   }

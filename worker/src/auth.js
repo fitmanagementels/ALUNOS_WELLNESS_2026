@@ -19,7 +19,21 @@ function allowedEmails(value) {
     .filter(Boolean);
 }
 
-export async function authenticate(request, env, deps = {}) {
+export async function authenticate(request, env, deps = {}, context) {
+  if (context && context.access && typeof context.access.getIdentity === 'function') {
+    try {
+      const identity = await context.access.getIdentity();
+      const email = String(identity && identity.email || '').trim().toLowerCase();
+      if (!email) throw authError('AUTH_REQUIRED', 'Autenticação necessária.', 401);
+      if (!allowedEmails(env && env.ALLOWED_EMAILS).includes(email)) {
+        throw authError('FORBIDDEN_EMAIL', 'Conta sem acesso.', 403);
+      }
+      return { email };
+    } catch (error) {
+      if (error && (error.code === 'AUTH_REQUIRED' || error.code === 'FORBIDDEN_EMAIL')) throw error;
+      throw authError('AUTH_INVALID', 'Não foi possível validar o acesso.', 401);
+    }
+  }
   const token = request.headers.get('Cf-Access-Jwt-Assertion');
   if (!token) throw authError('AUTH_REQUIRED', 'Autenticação necessária.', 401);
 
