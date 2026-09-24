@@ -10,5 +10,8 @@
     "test": "node --test",
     "validate:real": "node scripts/validar-dados-reais.js",
     "validate:permanence": "node scripts/validar-permanencia-real.js"
+  },
+  "devDependencies": {
+    "xlsx": "0.18.5"
   }
 }

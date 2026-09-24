@@ -23,10 +23,12 @@ test('Fluxo oferece navegação, operações e atalho de WhatsApp', () => {
   assert.match(components, /data-page="fluxo"/);
   assert.match(components, /data-subpage="leads"/);
   assert.match(components, /data-subpage="churns"/);
+  assert.match(components, /data-subpage="novos"/);
   assert.match(client, /fluxo: 'Fluxo'/);
   assert.match(client, /fluxoLead/);
   assert.match(client, /fluxoChurn/);
   assert.match(client, /excluirFluxoChurn/);
+  assert.match(client, /function renderFluxoNovos\(items\)/);
   assert.match(client, /wa\.me/);
 });
 

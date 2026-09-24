@@ -21,7 +21,8 @@ test('bootstrap D1 preserva o contrato consumido pelo PWA', async () => {
     student_last_teachers: [{ student_id: '42', teacher_name: 'Ruan', position: 1 }],
     student_tags: [{ student_id: '42', group_key: 'publico', title: 'Performance' }, { student_id: '42', group_key: 'comercial', title: 'Coach' }],
     profile_catalog: [{ type: 'etiqueta', group_key: 'comercial', catalog_key: 'coach', title: 'Coach', active: 1, position: 40 }],
-    leads: [], churns: [], settings: []
+    leads: [], churns: [], new_students: [{ entry_id: 'new-99', student_id: '99', official_name: 'ALUNO NOVO', official_phone: '', official_entry_on: '2026-09-10', official_contract: '2X', official_value_cents: 70000 }],
+    settings: [{ setting_type: 'dashboard', setting_key: 'filtros', value_json: '{"status":"Matriculados","polo":"XSTEAM WELLNESS CLUB"}', active: 1, position: 0, title: 'Filtros padrão', states_json: '[]' }], mutation_log: []
   }));
 
   assert.equal(response.versao, 'importacao:7|config:7|fluxo:7');
@@ -36,5 +37,5 @@ test('bootstrap D1 preserva o contrato consumido pelo PWA', async () => {
     etiquetasComerciais: ['Coach'], observacoesGerais: 'Prefere manhã', atualizadoEm: '2026-09-24T10:00:00Z'
   });
   assert.equal(response.catalogoPerfisAlunos[0].titulo, 'Coach');
-  assert.deepEqual(response.fluxo, { leads: [], churns: [] });
+  assert.deepEqual(response.fluxo, { leads: [], churns: [], novos: [{ id: 'new-99', alunoId: '99', nome: 'ALUNO NOVO', telefone: '', dataEntrada: '10/09/2026', contrato: '2X', valor: 700 }] });
 });

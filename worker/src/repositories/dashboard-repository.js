@@ -6,7 +6,7 @@ async function all(db, sql) {
 export async function readDashboard(db) {
   const [
     versions, students, contracts, permanence, events, profiles, lastTeachers,
-    catalog, studentTags, leads, churns, settings
+    catalog, studentTags, leads, churns, newStudents, settings, mutations
   ] = await Promise.all([
     all(db, 'SELECT version_id, reference_date, revision, activated_at FROM data_versions WHERE status = \'active\' LIMIT 1'),
     all(db, 'SELECT student_id, name, phone, status, plan_started_on, prescription_on, assessment_on FROM students'),
@@ -19,7 +19,9 @@ export async function readDashboard(db) {
     all(db, 'SELECT student_id, group_key, title FROM student_tags ORDER BY student_id, group_key, title'),
     all(db, 'SELECT lead_id, name, phone, origin, referral, first_contact_on, trial_on, trial_teacher, became_customer_on, status, contracted_plan, package_value_cents, sales_report, created_at, updated_at FROM leads WHERE archived_at IS NULL'),
     all(db, 'SELECT churn_id, student_id, official_name, official_phone, official_exit_on, responsible_professional, last_teacher, manual_exit_reason, manual_context, manual_retention_action, created_at, updated_at FROM churns WHERE archived_at IS NULL'),
-    all(db, 'SELECT setting_type, setting_key, active, position, value_json, title, states_json FROM settings')
+    all(db, 'SELECT entry_id, student_id, official_name, official_phone, official_entry_on, official_contract, official_value_cents FROM new_students'),
+    all(db, 'SELECT setting_type, setting_key, active, position, value_json, title, states_json FROM settings'),
+    all(db, 'SELECT created_at FROM mutation_log ORDER BY created_at DESC LIMIT 1')
   ]);
-  return { versions, students, contracts, permanence, events, profiles, lastTeachers, catalog, studentTags, leads, churns, settings };
+  return { versions, students, contracts, permanence, events, profiles, lastTeachers, catalog, studentTags, leads, churns, newStudents, settings, mutations };
 }
