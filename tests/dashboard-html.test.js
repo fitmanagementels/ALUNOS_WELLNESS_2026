@@ -81,22 +81,21 @@ test('formulário de Lead destaca campos obrigatórios e valida antes de entrar 
   assert.match(css, /\.field-required/);
 });
 
-test('fila aplica a alteração de fluxo localmente e não repete erro de validação em ciclo', () => {
+test('fila aplica a alteração de fluxo localmente e a persiste sem bloquear o modal', () => {
   const client = fs.readFileSync('pwa/js/dashboard.js', 'utf8');
   assert.match(client, /function aplicarMutacaoOtimista\(patch\)/);
   assert.match(client, /function reverterMutacaoOtimista\(rollback\)/);
   assert.match(client, /safeCacheSet\(state\.bootstrap\)/);
-  assert.match(client, /state\.failedMutations\.push\(lote\)/);
+  assert.match(client, /function prepararFilaDeSincronizacao\(\)/);
+  assert.match(client, /XsteamSync\.createSyncQueue/);
   assert.match(client, /function tentarNovamenteMutacoes\(\)/);
-  assert.match(client, /return new Promise\(function \(resolve, reject\)/);
-  assert.match(client, /entry\.resolve\(response\)/);
-  assert.match(client, /entry\.reject\(error\)/);
-  assert.match(client, /if\(state\.mutationQueue\.length\)flushQueue\(\);/);
+  assert.match(client, /state\.syncQueue\.enqueue\(\[patch\]\)/);
+  assert.match(client, /state\.syncQueue\.retryNow\(\)/);
   assert.match(client, /enqueue\(\{ tipo: 'configAlertas', valores: values \}\)\.catch\(function \(\) \{\}\);/);
   assert.match(client, /enqueue\(\{ tipo: 'configDashboard', valores: \{ homeCards: cards \} \}\)\.catch\(function \(\) \{\}\);/);
   assert.match(client, /enqueue\(\{tipo:lead\?'fluxoLead':'fluxoChurn',valores:values\}\)\.catch\(function\(\)\{\}\);/);
   assert.match(client, /enqueue\(\{tipo:'excluirFluxoChurn',valores:\{id:item\.id\}\}\)\.catch\(function\(\)\{\}\);/);
-  assert.doesNotMatch(client, /state\.mutationQueue=patches\.concat\(state\.mutationQueue\);setSave\('Não foi possível salvar\. Tente novamente\.'\);\}\)\.finally\(function\(\)\{state\.saving=false;if\(state\.mutationQueue\.length\)flushQueue\(\);/);
+  assert.doesNotMatch(client, /state\.failedMutations/);
 });
 
 test('Churn usa os menus profissionais e não exibe contrato ou polo', () => {
@@ -173,12 +172,12 @@ test('tema premium define superfícies, foco e adaptação de movimento', () => 
   assert.match(css, /\.mobile-dock[^}]*border-radius:/s);
 });
 
-test('cliente usa bootstrap local, cache persistente e fila de mutações', () => {
+test('cliente usa bootstrap local, cache persistente e fila de mutações IndexedDB', () => {
   const client = fs.readFileSync('pwa/js/dashboard.js', 'utf8');
   assert.match(client, /obterBootstrapDashboard/);
   assert.match(client, /obterVersaoDashboard/);
   assert.match(client, /localStorage/);
-  assert.match(client, /mutationQueue/);
+  assert.match(client, /syncQueue/);
   assert.match(client, /salvarMutacoesDashboard/);
   assert.match(client, /XsteamApi\.call/);
   assert.doesNotMatch(client, /google\.script\.run/);

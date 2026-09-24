@@ -1,5 +1,5 @@
-var CACHE_NAME = 'xsteam-static-v13';
-var STATIC_ASSETS = ['./', './css/dashboard.css', './css/student-profiles.css', './css/permanencia.css', './js/api.js', './js/student-profiles.js', './js/permanencia.js', './js/app.js', './js/dashboard.js', './assets/xsteam-gestao-icon.svg', './manifest.webmanifest'];
+var CACHE_NAME = 'xsteam-static-v14';
+var STATIC_ASSETS = ['./', './css/dashboard.css', './css/student-profiles.css', './css/permanencia.css', './js/api.js', './js/sync-queue.js', './js/student-profiles.js', './js/permanencia.js', './js/app.js', './js/dashboard.js', './assets/xsteam-gestao-icon.svg', './manifest.webmanifest'];
 self.addEventListener('install', function (event) { event.waitUntil(caches.open(CACHE_NAME).then(function (cache) { return cache.addAll(STATIC_ASSETS); }).then(function () { return self.skipWaiting(); })); });
 self.addEventListener('activate', function (event) { event.waitUntil(self.clients.claim()); });
 self.addEventListener('fetch', function (event) {

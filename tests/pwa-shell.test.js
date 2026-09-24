@@ -16,10 +16,11 @@ test('shell PWA inicia atrás do Access e possui manifesto e service worker', ()
   assert.equal(manifest.display, 'standalone');
   assert.equal(manifest.icons[0].src, './assets/xsteam-gestao-icon.svg');
   assert.match(appIcon, /data-variant="gestao"/);
-  assert.match(worker, /xsteam-static-v13/);
+  assert.match(worker, /xsteam-static-v14/);
   assert.match(worker, /\.\/css\/student-profiles\.css/);
   assert.match(worker, /\.\/css\/permanencia\.css/);
   assert.match(worker, /\.\/js\/student-profiles\.js/);
+  assert.match(worker, /\.\/js\/sync-queue\.js/);
   assert.match(worker, /\.\/js\/permanencia\.js/);
   assert.match(worker, /addAll\(STATIC_ASSETS\)/);
   assert.match(worker, /fetch\(event\.request\)/);
