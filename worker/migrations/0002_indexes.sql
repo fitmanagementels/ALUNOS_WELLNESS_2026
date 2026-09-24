@@ -1,0 +1,11 @@
+CREATE INDEX idx_students_status_name ON students(status, name);
+CREATE INDEX idx_contracts_student_expiry ON contracts(student_id, expires_on DESC);
+CREATE INDEX idx_contracts_location_status ON contracts(location, contract_status);
+CREATE INDEX idx_permanence_events_student_date ON permanence_events(student_id, reference_date DESC);
+CREATE INDEX idx_churns_student_exit ON churns(student_id, official_exit_on DESC);
+CREATE INDEX idx_leads_first_contact ON leads(first_contact_on DESC);
+CREATE INDEX idx_new_students_entry ON new_students(official_entry_on DESC);
+CREATE INDEX idx_import_batches_status_created ON import_batches(status, created_at DESC);
+CREATE INDEX idx_import_rows_batch_valid ON import_rows(batch_id, valid, file_kind);
+CREATE INDEX idx_import_errors_batch ON import_errors(batch_id, file_kind, row_number);
+CREATE UNIQUE INDEX idx_data_versions_one_active ON data_versions(status) WHERE status = 'active';
