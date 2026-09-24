@@ -46,7 +46,7 @@ const html = `<!doctype html>
   <main class="shell">
     <section class="cards" aria-label="Resumo rápido">
       <div class="card"><strong>Produção</strong><span>Arquitetura Google antiga permanece ativa e funcional.</span></div>
-      <div class="card"><strong>Marco revisto</strong><span>1ea33ed · 34 testes locais aprovados.</span></div>
+      <div class="card"><strong>Marco revisto</strong><span>e1596aa · 35 testes locais aprovados.</span></div>
       <div class="card"><strong>Cloudflare</strong><span>D1 populado; Worker, Access e R2 ainda não concluídos.</span></div>
       <div class="card risk"><strong>Gate atual</strong><span>Habilitar R2 e configurar Access antes do deploy protegido.</span></div>
     </section>
