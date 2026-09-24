@@ -133,7 +133,7 @@ Worker xsteam-gestao / workers.dev
 | Mutações D1 | Perfis, Leads, Churns e configurações com `request_id` | implementada em unidade; integração pendente | `mutation-service.js`, `mutation_log`, testes | API/dados | Lote usa `db.batch()`; precisa teste real de atomicidade |
 | Importação pelo PWA | Data/revisão + quatro campos de upload + ajuda + prévia | planejada | design e Tasks 9–10 | UI/R2/D1 | Substituirá a pasta do Drive; ainda não há código |
 | Fila IndexedDB | Persistência offline, FIFO e backoff | implementada e testada localmente | `pwa/js/sync-queue.js`, `tests/cloudflare/sync-queue.test.js` | PWA | Persiste antes do envio e retenta após falha; validação remota em produção pendente |
-| Backups D1→R2 | Snapshot semanal, JSONL compactado, SHA-256 e manifesto final | implementada no código; bloqueada por R2 para validação real | `backup-service.js`, `backup-service.test.js`, cron | continuidade | Restauração operacional ainda pendente |
+| Backups D1→R2 | Snapshot semanal, JSONL compactado, SHA-256, manifesto e SQL de recuperação protegido | implementada/testada localmente; bloqueada por R2 para validação real | `backup-service.js`, `restore-r2-backup.js`, testes, cron | continuidade | Aplicação ao banco requer confirmação explícita |
 | Seed e reconciliação D1 | Converte exportação XLSX e relatórios oficiais em SQL privado; compara métricas e hashes de identificadores | implementada e testada localmente | `scripts/build-d1-seed.js`, `scripts/reconcile-d1.js`, testes | migração/dados | Preserva dados manuais por ID; conector recorrente de origem/D1 ainda pendente |
 | Corte integral | Worker/Access/D1/R2 em produção sem Google | planejada | Tasks 12–14 | toda a plataforma | Depende de paridade, backup, ensaio e 48 h de validação |
 
@@ -242,7 +242,7 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 | 8 | Fila IndexedDB resiliente | implementada no código e testada localmente; validação no Worker protegido pendente |
 | 9 | Parser e upload pelo PWA/R2 | não iniciada |
 | 10 | Promoção atômica e fontes oficiais | não iniciada |
-| 11 | Backup, restauração e franquia | backup/cron implementados e testados; R2 e restauração operacional pendentes |
+| 11 | Backup, restauração e franquia | backup/cron e preparo seguro de SQL implementados/testados; R2 e ensaio de recuperação real pendentes |
 | 12 | Recursos remotos, Access e deploy vazio | parcial: D1 criado; R2/Access/Worker pendentes |
 | 13 | Migração e paridade dos dados reais | parcial: carga inicial oficial concluída e validada por contagens; paridade detalhada e operação recorrente pendentes |
 | 14 | Ensaio, corte e 48 h de validação | não iniciada |
@@ -306,7 +306,7 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 - **O que está sendo feito:** o código já troca o proxy por serviços D1 e o PWA por API same-origin. A carga inicial oficial foi gerada a partir das exportações e aplicada ao D1 remoto; a etapa corrente é a publicação segura.
 - **Arquivos ativos:** `worker/src/`, `worker/migrations/`, `tests/cloudflare/`, `pwa/js/api.js`, `pwa/sw.js` e `scripts/build-d1-seed.js` sustentam o runtime e a carga inicial.
 - **O que já está pronto:** esquema relacional, identidade nativa do Access com allowlist, bootstrap, roteador, mutações, análise de Churn, cliente same-origin, fila IndexedDB, carga D1, backup D1→R2 por cron e comparador de reconciliação. A suíte atual reportou 231 testes aprovados e nenhuma falha.
-- **O que ainda falta imediatamente:** configurar o Access real, habilitar R2, criar o bucket, publicar o runtime completo protegido e executar a validação de corte. O Worker temporário já existe, mas não entrega o PWA nem acessa dados. Importação pelo PWA/R2, conector recorrente de reconciliação e restauração operacional continuam pendentes.
+- **O que ainda falta imediatamente:** configurar o Access real, habilitar R2, criar o bucket, publicar o runtime completo protegido e executar a validação de corte. O Worker temporário já existe, mas não entrega o PWA nem acessa dados. Importação pelo PWA/R2, conector recorrente de reconciliação e ensaio real de restauração continuam pendentes.
 - **Cuidado ao continuar:** a produção antiga está ativa; não publicar o PWA same-origin no GitHub Pages e não implantar `xsteam-gestao` com dados reais antes dos gates.
 
 ## Riscos, bloqueios, divergências e pendências
@@ -353,7 +353,7 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 5. Habilitar R2 no painel com confirmação humana e criar o bucket de arquivos/backups.
 6. Configurar Cloudflare Access com IdP Google e política limitada à allowlist.
 7. Publicar o Worker protegido, testar o bootstrap e as mutações diretamente no `workers.dev` e só então alterar o runtime legado.
-8. Implementar importação pelo PWA/R2, restauração operacional e conectores recorrentes de reconciliação.
+8. Implementar importação pelo PWA/R2, ensaio real de recuperação e conectores recorrentes de reconciliação.
 
 ## Arquivos e pastas importantes
 
@@ -399,7 +399,7 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 - **Produção:** ainda é GitHub Pages → Worker proxy → Apps Script → Sheets/Drive; está funcional e não foi cortada.
 - **Migração:** código versionado do Worker full-stack, D1, Access, bootstrap, mutações, PWA same-origin, fila IndexedDB, backup e comparador de reconciliação está em andamento. A suíte atual tem 231 testes aprovados; a carga inicial D1 está concluída.
 - **Cloudflare remoto:** D1 migrado com `0001`–`0004` e carga inicial; R2 desabilitado pelo código `10042`; há Worker temporário seguro; Access não comprovado.
-- **Alertas críticos:** falta ativar R2 e Access antes do deploy completo; importação PWA/R2, restauração operacional e reconciliação recorrente não estão concluídas; CI legado requer revisão antes de qualquer alteração do fluxo GitHub Pages.
+- **Alertas críticos:** falta ativar R2 e Access antes do deploy completo; importação PWA/R2, ensaio real de recuperação e reconciliação recorrente não estão concluídos; CI legado requer revisão antes de qualquer alteração do fluxo GitHub Pages.
 - **Não desfazer:** preservação de dados manuais, importação atômica, filas separadas de ficha/avaliação, permanência sem LTV inferido, Churn oficial por ID, sistema antigo intacto até o corte.
 - **Plano vigente:** `docs/superpowers/plans/2026-09-22-cloudflare-total.md`.
 

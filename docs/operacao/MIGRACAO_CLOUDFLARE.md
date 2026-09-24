@@ -47,6 +47,17 @@ O Worker possui cron semanal, segunda-feira às 06:00 UTC, preparado para gerar 
 
 Não considerar um backup existente sem manifesto como recuperável. Antes de qualquer corte, executar e conferir um backup real no R2.
 
+Para preparar uma recuperação, baixar o `manifest.json` e os objetos do mesmo prefixo para uma pasta local temporária e executar:
+
+```bash
+node scripts/restore-r2-backup.js \
+  --manifest /tmp/xsteam-backup/backups/AAAA-MM-DD/ID/manifest.json \
+  --backup-dir /tmp/xsteam-backup \
+  --out /tmp/xsteam-restore.sql
+```
+
+O script valida schema, lista fixa de tabelas, contagens e SHA-256 antes de gerar o SQL com permissão privada. Ele não restaura nada por padrão. A aplicação ao D1 requer, além dos arquivos conferidos, `--apply --confirm-database xsteam-gestao`; essa etapa permanece uma operação humana e destrutiva.
+
 ## Rollback
 
 1. Não apagar a planilha, Drive ou runtime legado durante a estabilização.
