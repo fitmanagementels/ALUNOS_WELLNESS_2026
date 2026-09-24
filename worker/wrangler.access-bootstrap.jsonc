@@ -1,0 +1,6 @@
+{
+  "name": "xsteam-gestao",
+  "main": "src/access-bootstrap.js",
+  "compatibility_date": "2026-09-22",
+  "workers_dev": true
+}
