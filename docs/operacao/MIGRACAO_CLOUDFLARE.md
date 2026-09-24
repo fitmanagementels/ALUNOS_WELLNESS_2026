@@ -47,7 +47,15 @@ O Worker possui cron semanal, segunda-feira às 06:00 UTC, preparado para gerar 
 
 Não considerar um backup existente sem manifesto como recuperável. Antes de qualquer corte, executar e conferir um backup real no R2.
 
-Para preparar uma recuperação, baixar o `manifest.json` e os objetos do mesmo prefixo para uma pasta local temporária e executar:
+Para preparar uma recuperação, baixar o `manifest.json` e somente os objetos do mesmo prefixo para uma pasta local temporária:
+
+```bash
+node scripts/download-r2-backup.js \
+  --manifest-key backups/AAAA-MM-DD/ID/manifest.json \
+  --out-dir /tmp/xsteam-backup
+```
+
+Em seguida, gerar o SQL verificado:
 
 ```bash
 node scripts/restore-r2-backup.js \
