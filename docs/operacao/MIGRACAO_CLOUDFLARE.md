@@ -8,6 +8,7 @@
 - R2 ainda não foi habilitado. O bucket `xsteam-gestao-files` não existe.
 - Cloudflare Access ainda não protege o Worker.
 - O runtime completo permanece apenas no repositório, testado localmente.
+- O deploy completo em modo seco validou 19 arquivos estáticos e os bindings D1, R2, Assets e allowlist, sem alterar recursos remotos.
 
 ## Ativações que exigem o titular da conta
 

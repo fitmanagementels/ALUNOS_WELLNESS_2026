@@ -1,6 +1,6 @@
 # Contexto do Projeto — XSTEAM Gestão / Base Central TecnoFit
 
-Última atualização: **24/09/2026 09:20 — America/Fortaleza (UTC−03:00)**
+Última atualização: **24/09/2026 12:05 — America/Fortaleza (UTC−03:00)**
 Perfil detectado: **PWA operacional com dashboard de gestão**
 Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeiros e de acompanhamento, lote semanal de relatórios e persistência operacional.
 
@@ -9,16 +9,15 @@ Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeir
 ## Resumo executivo
 
 - O XSTEAM Gestão consolida alunos, contratos, vencimentos, prescrições, avaliações, permanência, perfis, Leads e Churns para a operação da XSTEAM Wellness Club.
-- O repositório canônico é `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main`. O estado revisto está no commit `1ea33ed`.
+- O repositório canônico é `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main`. O estado revisto está no commit `daf9cee`.
 - A produção continua na arquitetura antiga e funcional: **GitHub Pages → Worker proxy → Apps Script → Google Sheets/Drive**.
 - O endereço canônico em produção continua sendo `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/`. A consulta pública em 24/09/2026 retornou HTTP 200 e ainda entregava o cliente antigo apontando para `xsteam-dashboard-api.fitmanagement-els.workers.dev`.
 - Está em desenvolvimento uma migração integral para Cloudflare: um Worker entregará o PWA e a API no mesmo domínio; D1 será a fonte única; R2 guardará arquivos e backups; Cloudflare Access fará a autenticação.
-- O código local/versionado já contém a fundação do runtime, esquema D1, validação de Access, bootstrap, API same-origin, mutações idempotentes e análise de Churn. Isso ainda **não representa uma versão implantável ou pronta para corte**.
+- O código local/versionado já contém o runtime completo preparado, esquema D1, identidade nativa do Access, bootstrap, API same-origin, mutações idempotentes, análise de Churn, fila persistente, backup D1→R2 e comparador de reconciliação. Isso ainda **não representa uma versão pronta para corte**: R2 e Access remoto são gates externos, e importação/recuperação operacional ainda não foram concluídas.
 - O D1 remoto `xsteam-gestao` recebeu as migrações `0001`–`0004` e a carga inicial validada: 316 alunos, 321 contratos, 21 perfis manuais, 162 churns oficiais conciliados por ID e 231 novos alunos válidos.
 - O R2 ainda não está habilitado na conta Cloudflare. O Worker `xsteam-gestao` existe em modo temporário seguro no endereço `https://xsteam-gestao.fitmanagement-els.workers.dev`: retorna HTTP 503 sem assets, D1 ou R2; o Access de produção ainda não foi configurado.
-- A suíte local passou com **35 testes, 0 falhas** após a carga D1, a subaba de alunos novos e a fila persistente. O PWA same-origin ainda não foi publicado porque o corte depende de R2 e Access.
-- A implementação D1 possui incompatibilidades confirmadas antes do primeiro deploy: consulta inválida de etiquetas, DTOs de datas/contratos/eventos diferentes do contrato consumido pelo PWA e ausência de uma versão global que mude após mutações manuais.
-- A Task 6 começou em outro chat e está visível somente no working tree: há um gerador de seed XLSX→SQL, teste com planilhas sintéticas e a dependência `xlsx`; o reconciliador previsto pelo plano ainda não existe. Esse trabalho não foi tratado como concluído nem como commitado nesta revisão.
+- A suíte local passou com **231 testes, 0 falhas** após a fila persistente, uso da identidade nativa do Access, backup D1→R2, reconciliador e remoção de PII dos logs da API. O PWA same-origin ainda não foi publicado porque o corte depende de R2 e Access.
+- O deploy completo em modo seco reconhece os assets do PWA, D1, R2 e o cron de backup; ele não foi publicado para não expor dados antes da proteção de borda.
 
 ## Objetivo do projeto
 
@@ -31,20 +30,20 @@ Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeir
 
 | Item | Estado e evidência |
 |---|---|
-| Status geral | **Em desenvolvimento.** Migração Cloudflare entre as Fases 1 e 2 do plano `docs/superpowers/plans/2026-09-22-cloudflare-total.md`. |
-| Commit revisto | `1ea33ed` — `feat: migrar base oficial para d1`; `main` alinhada a `origin/main` no instante da revisão. |
+| Status geral | **Em desenvolvimento.** Migração Cloudflare com D1 carregado e runtime preparado; corte aguarda R2 e Access. |
+| Commit revisto | `daf9cee` — `fix: remover email de logs da api`; `main` contém os preparativos de backup e reconciliação. |
 | Produção ativa | **Validada na arquitetura antiga.** GitHub Pages ainda entrega o PWA v12 e usa o Worker proxy/Apps Script/Sheets. |
 | Novo PWA no código | **Implementado localmente, não publicado.** API `/api` same-origin, cache `xsteam-static-v14` e fila IndexedDB desde `e1596aa`. |
-| Novo backend | **Parcial.** Roteador D1, bootstrap, mutações e análise de Churn existem e passam em testes unitários, mas ainda têm incompatibilidades de integração. |
+| Novo backend | **Implementado e testado localmente.** Roteador D1, bootstrap, mutações, análise de Churn, Access nativo e cron de backup; validação remota protegida ainda pendente. |
 | D1 remoto | **Migrado e validado por contagens.** Banco `xsteam-gestao` com migrações `0001`–`0004`, 316 alunos, 321 contratos, 21 perfis, 162 churns e 231 novos alunos. |
 | R2 | **Bloqueado.** API Cloudflare retornou código `10042`: R2 precisa ser habilitado no painel. Nenhum bucket foi criado. |
 | Worker temporário | **Publicado e verificado.** `xsteam-gestao` responde HTTP 503 sem assets nem bindings de dados, aguardando Cloudflare Access. |
-| Worker novo | **Não implantado.** A Cloudflare respondeu que o script `xsteam-gestao` não existe na conta (`10007`). |
-| Cloudflare Access | Código de validação pronto; configuração remota, `ACCESS_TEAM_DOMAIN` e `ACCESS_AUD` ainda não confirmados. |
-| Testes locais | No marco `c909a55`, a revisão anterior registrou **218 testes, 0 falhas**. Com o rascunho da Task 6 no working tree, nova execução de `npm test` em 24/09/2026 reportou **34 arquivos/testes de topo aprovados, 0 falhas**, incluindo `data-migration.test.js`; `git diff --check` sem erro. As contagens usam granularidades diferentes e não devem ser comparadas como regressão. |
+| Worker novo | **Preparado localmente, não implantado.** O mesmo script possui deployment temporário seguro para viabilizar a configuração do Access. |
+| Cloudflare Access | Código usa identidade nativa da borda com allowlist; IdP Google e política remotos ainda não foram configurados. |
+| Testes locais | **231 testes, 0 falhas** em `npm test` após os preparativos de backup e reconciliação. |
 | CI do Pages | Run `35992124636` para `38658db`: **falha no passo `npm test`**; etapas de geração/publicação foram ignoradas. A causa exata do teste não foi extraída; dependências isoladas em `worker/package.json` são uma hipótese a confirmar. |
 | Churn oficial | Prévia anterior permanece válida e não substituiu `FLUXO_CHURNS`: 165 linhas; 151 preservadas por ID, 9 novas sem histórico, 3 antigas sem par e 2 divergências. |
-| Onde o trabalho parou | Dados oficiais e manuais foram migrados ao D1; o PWA local consome a API same-origin e ganhou a subaba Novos. R2 e Cloudflare Access ainda impedem criar o bucket, publicar o Worker e realizar o corte. |
+| Onde o trabalho parou | Dados oficiais e manuais foram migrados ao D1; o PWA local consome a API same-origin e ganhou fila persistente. R2 e Cloudflare Access ainda impedem criar o bucket, publicar o Worker completo e realizar o corte. |
 
 ## Arquitetura atual e arquitetura-alvo
 
@@ -93,13 +92,13 @@ Worker xsteam-gestao / workers.dev
 | Churns | Cadastro, arquivamento, análise mensal/semanal e diagnóstico | validada na produção antiga; parcial no D1 | `churn-analysis-service.js`, `mutations.test.js` | Fluxo/dados | Exclusão D1 vira `archived_at`, não `DELETE` |
 | Prévia oficial de Churns | Reconciliada por ID antes da substituição | validada | `21_TransicaoChurns.gs`, `transicao-churns.test.js` | migração/dados | Lista ativa permanece intacta |
 | API same-origin | PWA chama `POST /api` com sessão do Access | implementada no código, não implantada | `38658db`, `pwa/js/api.js` | frontend/segurança | Elimina runtime-config e CORS no alvo |
-| Autenticação Access | Valida JWT, emissor, audiência e allowlist | implementada e testada localmente; não configurada remotamente | `worker/src/auth.js`, `auth.test.js` | segurança | Dois e-mails autorizados |
+| Autenticação Access | Usa a identidade nativa da borda e allowlist | implementada e testada localmente; IdP/política remotos pendentes | `worker/src/auth.js`, `auth.test.js` | segurança | Dois e-mails autorizados; nenhum e-mail é enviado aos logs da API |
 | Bootstrap D1 | Lê tabelas D1 e monta payload do PWA | parcial | `dashboard-repository.js`, `bootstrap-service.js` | API/dados | Possui incompatibilidades de SQL e DTO listadas em riscos |
 | Mutações D1 | Perfis, Leads, Churns e configurações com `request_id` | implementada em unidade; integração pendente | `mutation-service.js`, `mutation_log`, testes | API/dados | Lote usa `db.batch()`; precisa teste real de atomicidade |
 | Importação pelo PWA | Data/revisão + quatro campos de upload + ajuda + prévia | planejada | design e Tasks 9–10 | UI/R2/D1 | Substituirá a pasta do Drive; ainda não há código |
 | Fila IndexedDB | Persistência offline, FIFO e backoff | implementada e testada localmente | `pwa/js/sync-queue.js`, `tests/cloudflare/sync-queue.test.js` | PWA | Persiste antes do envio e retenta após falha; validação remota em produção pendente |
-| Backups D1→R2 | Snapshot periódico, manifesto e restauração | planejada e bloqueada por R2 | Task 11 | continuidade | Necessário antes de dados reais |
-| Seed privado para D1 | Converte exportação XLSX e relatórios oficiais em SQL transacional fora do repositório | em desenvolvimento não commitado | `scripts/build-d1-seed.js`, `data-migration.test.js` | migração/dados | Teste sintético cobre precedência oficial e preservação manual; reconciliador ainda ausente |
+| Backups D1→R2 | Snapshot semanal, JSONL compactado, SHA-256 e manifesto final | implementada no código; bloqueada por R2 para validação real | `backup-service.js`, `backup-service.test.js`, cron | continuidade | Restauração operacional ainda pendente |
+| Seed e reconciliação D1 | Converte exportação XLSX e relatórios oficiais em SQL privado; compara métricas e hashes de identificadores | implementada e testada localmente | `scripts/build-d1-seed.js`, `scripts/reconcile-d1.js`, testes | migração/dados | Preserva dados manuais por ID; conector recorrente de origem/D1 ainda pendente |
 | Corte integral | Worker/Access/D1/R2 em produção sem Google | planejada | Tasks 12–14 | toda a plataforma | Depende de paridade, backup, ensaio e 48 h de validação |
 
 ### Evolução recente
@@ -113,6 +112,11 @@ Worker xsteam-gestao / workers.dev
 - `84efa70`: repositório e serviço inicial de bootstrap D1.
 - `38658db`: cliente PWA convertido para `/api` same-origin e service worker `v13`.
 - `c909a55`: Worker deixou de ser proxy do Apps Script no código-alvo; roteador, mutações, etiquetas e análise de Churn foram portados para D1.
+- `e1596aa`: fila de sincronização IndexedDB persistente, FIFO e com retentativas.
+- `9f1bc29`: autenticação passa a usar identidade nativa do Cloudflare Access.
+- `e2d99b3`: backup D1→R2 paginado com manifesto e cron semanal.
+- `1a75b82`: comparador seguro de reconciliação por métricas e hashes curtos.
+- `daf9cee`: logs de erro da API deixam de registrar e-mail do usuário.
 
 ## Entidades, variáveis e associações
 
@@ -194,15 +198,15 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 |---|---|---|
 | 1 | Worker único, Assets, D1 e R2 locais | implementada no código; R2 remoto indisponível |
 | 2 | Esquema D1 auditável | implementada e aplicada remotamente: `0001`–`0004` |
-| 3 | Cloudflare Access e allowlist | código/testes implementados; configuração remota pendente |
-| 4 | Bootstrap e roteador D1 | implementada parcialmente; integração real e contrato DTO pendentes |
-| 5 | Mutações e análise de Churn | implementada em unidade; integração D1/versão pendente |
-| 6 | Seed privado e reconciliação | carga inicial concluída no D1 remoto por XLSX→SQL; reconciliador recorrente ainda ausente |
+| 3 | Cloudflare Access e allowlist | identidade nativa e allowlist implementadas/testadas; configuração remota pendente |
+| 4 | Bootstrap e roteador D1 | implementada e testada localmente; integração real protegida pendente |
+| 5 | Mutações e análise de Churn | implementada/testada localmente; integração protegida pendente |
+| 6 | Seed privado e reconciliação | carga inicial concluída; comparador seguro implementado, conectores recorrentes pendentes |
 | 7 | PWA same-origin | implementada no código; não publicada |
 | 8 | Fila IndexedDB resiliente | implementada no código e testada localmente; validação no Worker protegido pendente |
 | 9 | Parser e upload pelo PWA/R2 | não iniciada |
 | 10 | Promoção atômica e fontes oficiais | não iniciada |
-| 11 | Backup, restauração e franquia | não iniciada; bloqueada por R2 |
+| 11 | Backup, restauração e franquia | backup/cron implementados e testados; R2 e restauração operacional pendentes |
 | 12 | Recursos remotos, Access e deploy vazio | parcial: D1 criado; R2/Access/Worker pendentes |
 | 13 | Migração e paridade dos dados reais | parcial: carga inicial oficial concluída e validada por contagens; paridade detalhada e operação recorrente pendentes |
 | 14 | Ensaio, corte e 48 h de validação | não iniciada |
@@ -265,8 +269,8 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 
 - **O que está sendo feito:** o código já troca o proxy por serviços D1 e o PWA por API same-origin. A carga inicial oficial foi gerada a partir das exportações e aplicada ao D1 remoto; a etapa corrente é a publicação segura.
 - **Arquivos ativos:** `worker/src/`, `worker/migrations/`, `tests/cloudflare/`, `pwa/js/api.js`, `pwa/sw.js` e `scripts/build-d1-seed.js` sustentam o runtime e a carga inicial.
-- **O que já está pronto:** esquema relacional, autenticação por JWT Access no código, bootstrap, roteador das quatro ações, mutações, análise de Churn, cliente same-origin e carga inicial D1. A suíte atual reportou 34 arquivos/testes de topo aprovados e nenhuma falha.
-- **O que ainda falta imediatamente:** configurar o Access real, habilitar R2, criar o bucket, publicar o runtime completo protegido e executar a validação de corte. O Worker temporário já existe, mas não entrega o PWA nem acessa dados. O reconciliador recorrente, importação pelo PWA e backups permanecem pendentes.
+- **O que já está pronto:** esquema relacional, identidade nativa do Access com allowlist, bootstrap, roteador, mutações, análise de Churn, cliente same-origin, fila IndexedDB, carga D1, backup D1→R2 por cron e comparador de reconciliação. A suíte atual reportou 231 testes aprovados e nenhuma falha.
+- **O que ainda falta imediatamente:** configurar o Access real, habilitar R2, criar o bucket, publicar o runtime completo protegido e executar a validação de corte. O Worker temporário já existe, mas não entrega o PWA nem acessa dados. Importação pelo PWA/R2, conector recorrente de reconciliação e restauração operacional continuam pendentes.
 - **Cuidado ao continuar:** a produção antiga está ativa; não publicar o PWA same-origin no GitHub Pages e não implantar `xsteam-gestao` com dados reais antes dos gates.
 
 ## Riscos, bloqueios, divergências e pendências
@@ -275,7 +279,7 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 
 - **Confirmado — R2:** a conta ainda não habilitou R2; a API retornou `10042`. Tasks 9 e 11 dependem disso.
 - **Confirmado — Worker temporário:** `xsteam-gestao` foi publicado em 24/09/2026 com a versão `af497def-bc8f-4ddd-ab95-13a566c8f137`. A verificação HTTP retornou 503 e a mensagem segura esperada; não há assets, D1 ou R2 no arquivo de deploy temporário.
-- **A confirmar — Access:** IdP, aplicação Access, audiência e domínio de equipe ainda não foram comprovados remotamente.
+- **A confirmar — Access:** IdP Google e política de borda para as duas contas ainda não foram comprovados remotamente. O runtime passa a obter a identidade diretamente do Access, sem configurar manualmente audiência ou domínio no Worker.
 
 ### Incompatibilidades técnicas confirmadas
 
@@ -290,11 +294,11 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 
 ### Dados e operação
 
-- D1 recebeu a carga inicial por SQL gerado fora do repositório; a reconciliação automatizada para cargas futuras ainda não foi implementada.
-- O seed da Task 6 gera SQL privado, exige saída fora do repositório com modo `0600` e tem teste sintético. A carga inicial foi validada no D1 local e aplicada ao remoto. Ainda faltam o reconciliador definido no plano e evidência de paridade detalhada para as cargas recorrentes.
+- D1 recebeu a carga inicial por SQL gerado fora do repositório. O comparador de reconciliação já verifica contagens, valores e hashes curtos de identificadores, mas ainda não lê a origem e o D1 remoto diretamente em uma rotina recorrente.
+- O seed da Task 6 gera SQL privado, exige saída fora do repositório com modo `0600` e tem teste sintético. A carga inicial foi validada no D1 local e aplicada ao remoto. Ainda faltam evidência de paridade detalhada e conectores para as cargas recorrentes.
 - A migração definitiva de Churns continua pendente de decisão sobre 2 divergências e 3 registros antigos sem par.
 - Não há fonte confiável para estimar LTV histórico.
-- A fila IndexedDB já mantém alterações após fechar o app, com retentativas automáticas. Importação pelo PWA/R2 e backups continuam planejados.
+- A fila IndexedDB já mantém alterações após fechar o app, com retentativas automáticas. O backup D1→R2 e seu cron estão prontos no código, mas só poderão ser exercitados após habilitar R2; importação pelo PWA/R2 continua planejada.
 - Chart.js continua vindo de CDN no HTML; o desenho “sem dependências externas de runtime” precisa decidir se esse arquivo será empacotado localmente.
 
 ### Preparação segura do ZIP para uma IA externa
@@ -311,9 +315,9 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 3. Adicionar uma versão de configuração/Fluxo/mutações que mude após qualquer gravação e sustente a sincronização em até dez segundos.
 4. Corrigir a instalação de dependências no CI e impedir que o workflow legado publique o cliente same-origin antes do corte.
 5. Habilitar R2 no painel com confirmação humana e criar o bucket de arquivos/backups.
-6. Configurar Cloudflare Access com IdP Google, audiência e política limitada à allowlist.
+6. Configurar Cloudflare Access com IdP Google e política limitada à allowlist.
 7. Publicar o Worker protegido, testar o bootstrap e as mutações diretamente no `workers.dev` e só então alterar o runtime legado.
-8. Implementar importação pelo PWA/R2, backups e reconciliador para as próximas cargas.
+8. Implementar importação pelo PWA/R2, restauração operacional e conectores recorrentes de reconciliação.
 
 ## Arquivos e pastas importantes
 
@@ -355,11 +359,11 @@ Documento canônico: [`docs/superpowers/plans/2026-09-22-cloudflare-total.md`](d
 ## Contexto para outro chat ou IA
 
 - **Projeto:** XSTEAM Gestão, PWA operacional e dashboard da Wellness.
-- **Canônico:** `fitmanagementels/ALUNOS_WELLNESS_2026`, `main`, marco revisto `c909a55`.
+- **Canônico:** `fitmanagementels/ALUNOS_WELLNESS_2026`, `main`, marco revisto `daf9cee`.
 - **Produção:** ainda é GitHub Pages → Worker proxy → Apps Script → Sheets/Drive; está funcional e não foi cortada.
-- **Migração:** código versionado do Worker full-stack, D1, Access, bootstrap, mutações, PWA same-origin e fila IndexedDB está em andamento. A suíte atual tem 35 testes aprovados; a carga inicial D1 está concluída e o reconciliador recorrente ainda não existe.
-- **Cloudflare remoto:** D1 migrado com `0001`–`0004` e carga inicial; R2 desabilitado pelo código `10042`; Worker novo ainda sem deployment; Access não comprovado.
-- **Alertas críticos:** query inválida de `student_tags`; datas e nomes de DTO incompatíveis com o PWA; versão não muda após mutações; CI limpa falhou.
+- **Migração:** código versionado do Worker full-stack, D1, Access, bootstrap, mutações, PWA same-origin, fila IndexedDB, backup e comparador de reconciliação está em andamento. A suíte atual tem 231 testes aprovados; a carga inicial D1 está concluída.
+- **Cloudflare remoto:** D1 migrado com `0001`–`0004` e carga inicial; R2 desabilitado pelo código `10042`; há Worker temporário seguro; Access não comprovado.
+- **Alertas críticos:** falta ativar R2 e Access antes do deploy completo; importação PWA/R2, restauração operacional e reconciliação recorrente não estão concluídas; CI legado requer revisão antes de qualquer alteração do fluxo GitHub Pages.
 - **Não desfazer:** preservação de dados manuais, importação atômica, filas separadas de ficha/avaliação, permanência sem LTV inferido, Churn oficial por ID, sistema antigo intacto até o corte.
 - **Plano vigente:** `docs/superpowers/plans/2026-09-22-cloudflare-total.md`.
 
@@ -385,11 +389,11 @@ O lote operacional atual contém exatamente quatro relatórios: vencimentos, fic
 
 **Decisão registrada:** a arquitetura-alvo usa um único Worker `workers.dev` para Static Assets e API same-origin, D1 como fonte relacional única, R2 para arquivos e backups e Cloudflare Access com login Google. Somente duas contas do proprietário estão na allowlist. GitHub permanece como versionamento, mas não participa do runtime final. Não existe autorização para comprar domínio, ativar plano pago automaticamente ou excluir os dados Google após o corte.
 
-**Confirmado:** o código versionado contém configuração de Static Assets/D1/R2, quatro migrações SQL, verificação JWT do Access, repositório de leitura, adaptador de bootstrap, roteador HTTP, mutações idempotentes, análise de Churn, cliente PWA same-origin e fila IndexedDB persistente. O service worker do código está em `xsteam-static-v14`. A suíte atual reportou 35 arquivos/testes de topo aprovados, sem falhas.
+**Confirmado:** o código versionado contém configuração de Static Assets/D1/R2, quatro migrações SQL, identidade nativa do Access, repositório de leitura, adaptador de bootstrap, roteador HTTP, mutações idempotentes, análise de Churn, cliente PWA same-origin, fila IndexedDB persistente, backup D1→R2 e comparador seguro de reconciliação. O service worker do código está em `xsteam-static-v14`. A suíte atual reportou 231 testes aprovados, sem falhas.
 
-**Confirmado:** `scripts/build-d1-seed.js` lê a exportação mestra e os relatórios oficiais de Churns e novos alunos, preserva campos manuais por ID e produz SQL privado. A ferramenta recusa saída dentro do repositório, cria o arquivo com permissão `0600` e imprime somente contagens. `tests/cloudflare/data-migration.test.js` usa planilhas sintéticas para verificar precedência dos dados oficiais e preservação de observações, etiquetas e retenção manuais. A carga inicial foi testada em D1 local e aplicada ao D1 remoto, onde as contagens foram confirmadas. O reconciliador exigido pelo plano ainda não foi criado; por isso a Task 6 permanece parcial para cargas futuras.
+**Confirmado:** `scripts/build-d1-seed.js` lê a exportação mestra e os relatórios oficiais de Churns e novos alunos, preserva campos manuais por ID e produz SQL privado. A ferramenta recusa saída dentro do repositório, cria o arquivo com permissão `0600` e imprime somente contagens. `tests/cloudflare/data-migration.test.js` usa planilhas sintéticas para verificar precedência dos dados oficiais e preservação de observações, etiquetas e retenção manuais. A carga inicial foi testada em D1 local e aplicada ao D1 remoto, onde as contagens foram confirmadas. `scripts/reconcile-d1.js` compara métricas, centavos e hashes curtos de IDs sem expor dados pessoais; o conector recorrente de origem/D1 ainda não existe, por isso a Task 6 permanece parcial para cargas futuras.
 
-**Confirmado:** o D1 remoto `xsteam-gestao` existe. As migrações `0001_core.sql` a `0004_tags.sql` foram aplicadas e a carga inicial recebeu 316 alunos, 321 contratos, 21 perfis, 162 churns oficiais e 231 novos alunos válidos. O R2 não está habilitado e não existe bucket. O Worker `xsteam-gestao` possui somente um deployment temporário sem dados, retornando 503; a configuração efetiva de Cloudflare Access ainda não foi comprovada.
+**Confirmado:** o D1 remoto `xsteam-gestao` existe. As migrações `0001_core.sql` a `0004_tags.sql` foram aplicadas e a carga inicial recebeu 316 alunos, 321 contratos, 21 perfis, 162 churns oficiais e 231 novos alunos válidos. O R2 não está habilitado e não existe bucket. O Worker `xsteam-gestao` possui somente um deployment temporário sem dados, retornando 503; a configuração efetiva de Cloudflare Access ainda não foi comprovada. O cron de backup semanal está definido no runtime completo, mas não pode rodar até existir o bucket R2.
 
 ### Modelo de dados e associações
 
