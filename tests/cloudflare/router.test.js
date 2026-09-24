@@ -48,3 +48,20 @@ test('API do Worker rejeita rota, método e ação antes de acessar dados', asyn
   assert.equal(get.status, 405);
   assert.equal(unknown.status, 400);
 });
+
+test('falha da API registra contexto operacional sem e-mail do usuário', async () => {
+  const { handleApiRequest } = await import('../../worker/src/router.js');
+  const entries = [];
+  const original = console.error;
+  console.error = (entry) => entries.push(entry);
+  try {
+    const response = await handleApiRequest(request('bootstrap'), { DB: {} }, {
+      authenticate: async () => ({ email: 'fitmanagement.els@gmail.com' }),
+      buildBootstrap: async () => { throw Object.assign(new Error('falhou'), { code: 'D1_ERROR' }); }
+    });
+    assert.equal(response.status, 503);
+  } finally {
+    console.error = original;
+  }
+  assert.deepEqual(entries, [{ event: 'dashboard_api_error', action: 'bootstrap', code: 'D1_ERROR' }]);
+});

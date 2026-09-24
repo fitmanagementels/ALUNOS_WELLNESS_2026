@@ -63,7 +63,7 @@ export async function handleApiRequest(request, env, deps = {}, context) {
     }
     return apiError('VALIDATION_ERROR', 'Ação inválida.', 400);
   } catch (error) {
-    console.error({ event: 'dashboard_api_error', action, actor: actor.email, code: error && error.code || 'INTERNAL_ERROR' });
+    console.error({ event: 'dashboard_api_error', action, code: error && error.code || 'INTERNAL_ERROR' });
     return apiError('SERVICE_UNAVAILABLE', 'Serviço indisponível.', 503);
   }
 }
