@@ -28,3 +28,12 @@ test('schema D1 contém entidades, preservação manual e versionamento ativo', 
   assert.match(indexes, /idx_contracts_student_expiry/i);
   assert.match(indexes, /idx_data_versions_one_active/i);
 });
+
+test('schema D1 disponibiliza etiquetas persistentes para perfis de alunos', () => {
+  const tags = fs.readFileSync('worker/migrations/0004_tags.sql', 'utf8');
+  assert.match(tags, /INSERT INTO tag_groups/);
+  assert.match(tags, /'publico'/);
+  assert.match(tags, /'comercial'/);
+  assert.match(tags, /'comercial:coach'/);
+  assert.match(tags, /'publico:performance'/);
+});

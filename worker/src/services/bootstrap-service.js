@@ -2,17 +2,24 @@ import { readDashboard } from '../repositories/dashboard-repository.js';
 
 function toNumber(value) { return Number.isFinite(Number(value)) ? Number(value) : 0; }
 
-function mapProfiles(profiles, lastTeachers) {
+function mapProfiles(profiles, lastTeachers, studentTags, students) {
   const teachers = new Map();
+  const tags = new Map();
+  const names = new Map((students || []).map((student) => [String(student.student_id), student.name || '']));
   lastTeachers.forEach((row) => {
     const list = teachers.get(row.student_id) || [];
     list.push(row.teacher_name);
     teachers.set(row.student_id, list);
   });
+  studentTags.forEach((row) => {
+    const value = tags.get(row.student_id) || { publico: [], comercial: [] };
+    if (row.group_key === 'publico' || row.group_key === 'comercial') value[row.group_key].push(row.title);
+    tags.set(row.student_id, value);
+  });
   return profiles.map((row) => ({
-    id: String(row.student_id), aluno: '', professorResponsavel: row.responsible_teacher || '',
+    id: String(row.student_id), aluno: names.get(String(row.student_id)) || '', professorResponsavel: row.responsible_teacher || '',
     ultimosProfessores: teachers.get(row.student_id) || [], perfilPagamento: row.payment_profile || 'Sem histórico',
-    observacaoPagamento: row.payment_notes || '', etiquetasPublico: [], etiquetasComerciais: [],
+    observacaoPagamento: row.payment_notes || '', etiquetasPublico: (tags.get(row.student_id) || {}).publico || [], etiquetasComerciais: (tags.get(row.student_id) || {}).comercial || [],
     observacoesGerais: row.general_notes || '', atualizadoEm: row.updated_at || ''
   }));
 }
@@ -47,7 +54,7 @@ export async function buildBootstrap(db) {
       tipoEvento: row.event_type, campo: row.field_name, valorAnterior: row.previous_value,
       valorNovo: row.new_value, registradoEm: row.recorded_at
     })),
-    perfisAlunos: mapProfiles(data.profiles, data.lastTeachers),
+    perfisAlunos: mapProfiles(data.profiles, data.lastTeachers, data.studentTags, data.students),
     catalogoPerfisAlunos: data.catalog.map((row) => ({
       tipo: row.type, grupo: row.group_key, chave: row.catalog_key, titulo: row.title,
       ativo: Boolean(row.active), ordem: toNumber(row.position)
