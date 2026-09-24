@@ -10,7 +10,7 @@
   "d1_databases": [{
     "binding": "DB",
     "database_name": "xsteam-gestao",
-    "database_id": "00000000-0000-0000-0000-000000000000",
+    "database_id": "5a7ec89b-2059-41f8-99a0-c6444f6266c9",
     "migrations_dir": "migrations"
   }],
   "r2_buckets": [{

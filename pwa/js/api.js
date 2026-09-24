@@ -6,15 +6,12 @@
   }
 
   async function call(action, payload) {
-    if (!window.XsteamConfig || !XsteamConfig.workerUrl) {
-      throw error('O PWA ainda não foi configurado.', 'CONFIG_ERROR');
-    }
     var response;
     try {
-      response = await fetch(XsteamConfig.workerUrl + '/api', {
+      response = await fetch('/api', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        credentials: 'omit',
+        credentials: 'same-origin',
         body: JSON.stringify({ action: action, payload: payload || {} })
       });
     } catch (_) {
