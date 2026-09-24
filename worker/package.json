@@ -4,5 +4,8 @@
   "type": "module",
   "scripts": {
     "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "jose": "6.2.12"
   }
 }
