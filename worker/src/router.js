@@ -2,6 +2,7 @@ import { authenticate as authenticateAccess } from './auth.js';
 import { buildBootstrap as buildDashboardBootstrap } from './services/bootstrap-service.js';
 import { saveMutations as saveDashboardMutations } from './services/mutation-service.js';
 import { analyzeChurn as analyzeDashboardChurn } from './services/churn-analysis-service.js';
+import { buildLocalBackup as buildDashboardLocalBackup } from './services/local-backup-service.js';
 import { apiError, json } from './http.js';
 
 const MAX_JSON_BYTES = 1024 * 1024;
@@ -43,6 +44,7 @@ export async function handleApiRequest(request, env, deps = {}, context) {
   const buildBootstrap = deps.buildBootstrap || buildDashboardBootstrap;
   const saveMutations = deps.saveMutations || saveDashboardMutations;
   const analyzeChurn = deps.analyzeChurn || analyzeDashboardChurn;
+  const buildLocalBackup = deps.buildLocalBackup || buildDashboardLocalBackup;
 
   try {
     if (action === 'bootstrap') {
@@ -59,6 +61,10 @@ export async function handleApiRequest(request, env, deps = {}, context) {
     }
     if (action === 'analiseChurn') {
       const data = await analyzeChurn(env.DB, payload);
+      return json({ ok: true, data });
+    }
+    if (action === 'exportBackup') {
+      const data = await buildLocalBackup(env.DB);
       return json({ ok: true, data });
     }
     return apiError('VALIDATION_ERROR', 'Ação inválida.', 400);
