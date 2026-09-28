@@ -2,11 +2,10 @@
   "name": "xsteam-gestao",
   "main": "src/index.js",
   "compatibility_date": "2026-09-22",
-  "triggers": { "crons": ["0 6 * * 1"] },
   "assets": {
     "directory": "../pwa",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api", "/auth/*"]
   },
   "d1_databases": [{
     "binding": "DB",
@@ -14,17 +13,7 @@
     "database_id": "5a7ec89b-2059-41f8-99a0-c6444f6266c9",
     "migrations_dir": "migrations"
   }],
-  "r2_buckets": [{
-    "binding": "FILES",
-    "bucket_name": "xsteam-gestao-files"
-  }],
   "vars": {
     "ALLOWED_EMAILS": "fitmanagement.els@gmail.com,elohimlima15@gmail.com"
-  },
-  "access": {
-    "dev": {
-      "aud": "xsteam-gestao",
-      "identity": { "email": "fitmanagement.els@gmail.com" }
-    }
   }
 }

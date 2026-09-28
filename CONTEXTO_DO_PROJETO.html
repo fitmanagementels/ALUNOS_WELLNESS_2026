@@ -16,13 +16,13 @@
   </style>
 </head>
 <body>
-  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 24/09/2026 12:05 · PWA operacional + dashboard · migração Cloudflare em desenvolvimento</p></div></header>
+  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 28/09/2026 · PWA operacional + dashboard · Cloudflare sem R2 ou Access</p></div></header>
   <main class="shell">
     <section class="cards" aria-label="Resumo rápido">
       <div class="card"><strong>Produção</strong><span>Arquitetura Google antiga permanece ativa e funcional.</span></div>
-      <div class="card"><strong>Marco revisto</strong><span>daf9cee · 231 testes locais aprovados.</span></div>
-      <div class="card"><strong>Cloudflare</strong><span>D1 populado; Worker, Access e R2 ainda não concluídos.</span></div>
-      <div class="card risk"><strong>Gate atual</strong><span>Habilitar R2 e configurar Access antes do deploy protegido.</span></div>
+      <div class="card"><strong>Marco revisto</strong><span>OAuth Google direto e backup local criptografado implementados.</span></div>
+      <div class="card"><strong>Cloudflare</strong><span>D1 populado; PWA e API serão servidos pelo Worker.</span></div>
+      <div class="card risk"><strong>Gate atual</strong><span>Criar os três secrets Google/sessão e validar o deploy.</span></div>
     </section>
     <section class="toolbar" aria-label="Ferramentas">
       <input id="search" class="search" type="search" placeholder="Buscar na memória" aria-label="Buscar na memória">
@@ -36,33 +36,42 @@
   <div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="viewerTitle"><button class="backdrop" id="closeBackdrop" type="button" aria-label="Fechar"></button><section class="panel"><header class="panel-head"><div><strong id="viewerTitle">Markdown canônico</strong><div class="meta">Conteúdo integral do arquivo</div></div><button class="button" id="close" type="button">Fechar</button></header><textarea id="viewerText" readonly></textarea><footer class="panel-foot"><button class="button primary" id="copyMarkdown" type="button">Copiar Markdown</button></footer></section></div>
   <textarea id="markdownSource" hidden># Contexto do Projeto — XSTEAM Gestão / Base Central TecnoFit
 
-Última atualização: **24/09/2026 12:05 — America/Fortaleza (UTC−03:00)**
+Última atualização: **28/09/2026 — America/Fortaleza (UTC−03:00)**
 Perfil detectado: **PWA operacional com dashboard de gestão**
 Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeiros e de acompanhamento, lote semanal de relatórios e persistência operacional.
 
 &gt; Memória portátil canônica para humanos e IAs. Planilhas reais, tokens, secrets, bancos exportados e credenciais não devem ser versionados. Os dois e-mails operacionais da allowlist aparecem em configuração, testes e documentação e devem ser tratados como dados pessoais ao compartilhar o projeto externamente.
 
-## Resumo executivo
+## Resumo executivo — decisão vigente em 28/09/2026
 
-- O XSTEAM Gestão consolida alunos, contratos, vencimentos, prescrições, avaliações, permanência, perfis, Leads e Churns para a operação da XSTEAM Wellness Club.
-- O repositório canônico é `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main`. O estado revisto está no commit `daf9cee`.
-- A produção continua na arquitetura antiga e funcional: **GitHub Pages → Worker proxy → Apps Script → Google Sheets/Drive**.
-- O endereço canônico em produção continua sendo `https://fitmanagementels.github.io/ALUNOS_WELLNESS_2026/`. A consulta pública em 24/09/2026 retornou HTTP 200 e ainda entregava o cliente antigo apontando para `xsteam-dashboard-api.fitmanagement-els.workers.dev`.
-- Está em desenvolvimento uma migração integral para Cloudflare: um Worker entregará o PWA e a API no mesmo domínio; D1 será a fonte única; R2 guardará arquivos e backups; Cloudflare Access fará a autenticação.
-- O código local/versionado já contém o runtime completo preparado, esquema D1, identidade nativa do Access, bootstrap, API same-origin, mutações idempotentes, análise de Churn, fila persistente, backup D1→R2 e comparador de reconciliação. Isso ainda **não representa uma versão pronta para corte**: R2 e Access remoto são gates externos, e importação/recuperação operacional ainda não foram concluídas.
-- O D1 remoto `xsteam-gestao` recebeu as migrações `0001`–`0004` e a carga inicial validada: 316 alunos, 321 contratos, 21 perfis manuais, 162 churns oficiais conciliados por ID e 231 novos alunos válidos.
-- O R2 ainda não está habilitado na conta Cloudflare. O Worker `xsteam-gestao` existe em modo temporário seguro no endereço `https://xsteam-gestao.fitmanagement-els.workers.dev`: retorna HTTP 503 sem assets, D1 ou R2; o Access de produção ainda não foi configurado.
-- A suíte local passou com **231 testes, 0 falhas** após a fila persistente, uso da identidade nativa do Access, backup D1→R2, reconciliador e remoção de PII dos logs da API. O PWA same-origin ainda não foi publicado porque o corte depende de R2 e Access.
-- O deploy completo em modo seco reconhece os assets do PWA, D1, R2 e o cron de backup; ele não foi publicado para não expor dados antes da proteção de borda.
+- O XSTEAM Gestão consolida alunos, contratos, vencimentos, prescrições, avaliações, permanência, perfis, Leads e Churns da XSTEAM Wellness Club.
+- O repositório canônico é `fitmanagementels/ALUNOS_WELLNESS_2026`, branch `main`; GitHub é backup de código, não parte do funcionamento após o corte.
+- A produção legada continua funcional em **GitHub Pages → Worker proxy → Apps Script → Google Sheets/Drive** e só será desligada após a validação manual do novo ambiente.
+- A arquitetura aprovada substitui as decisões anteriores que mencionavam R2 e Cloudflare Access: **Cloudflare Worker + Static Assets + D1**, sem R2, Zero Trust, Access, domínio próprio ou cartão de crédito.
+- O Worker servirá PWA e API same-origin em `https://xsteam-gestao.fitmanagement-els.workers.dev`; autenticação será Google OAuth direto com sessão assinada, restrita a `fitmanagement.els@gmail.com` e `elohimlima15@gmail.com`.
+- O D1 remoto `xsteam-gestao` recebeu as migrações `0001`–`0004` e carga inicial validada: 316 alunos, 321 contratos, 21 perfis, 162 churns e 231 alunos novos.
+- O runtime local tem OAuth com PKCE, sessão segura, D1, mutações idempotentes, análise de Churn, fila persistente, backup local cifrado e restauração com confirmação explícita. Chart.js também é entregue localmente, sem CDN externo.
+- O backup passou a ser manual e criptografado no navegador; a senha nunca sai do dispositivo. Não há backup remoto R2 nesta fase.
+- O corte aguarda somente configuração manual de três secrets no painel Cloudflare (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SESSION_SECRET`) e o deploy/validação pelo titular. Os valores não devem ser enviados por chat, GitHub ou arquivo do projeto.
 
 ## Objetivo do projeto
 
 - **Objetivo principal — Confirmado:** manter uma base confiável de alunos e contratos e transformá-la em decisões diárias para a gestão e operação da XSTEAM Wellness Club.
-- **Resultado esperado — Decisão registrada:** frontend, backend, autenticação, banco, importações e arquivos operacionais no Cloudflare, sem Google ou GitHub no caminho de execução.
+- **Resultado esperado — Decisão registrada:** frontend, backend e banco no Cloudflare; login por Google OAuth direto apenas para as duas contas permitidas; GitHub somente como backup de código. Não usar R2, Access, Zero Trust, cartão ou domínio próprio.
 - **Usuário atual — Confirmado pelo usuário:** somente o proprietário, por enquanto. O desenho aprovado permite duas contas pessoais do proprietário: `fitmanagement.els@gmail.com` e `elohimlima15@gmail.com`.
-- **Critérios de sucesso — Confirmados:** dados oficiais e manuais preservados; importação atômica, auditável e reversível; PWA responsivo; salvamentos idempotentes e não bloqueantes; sincronização entre dispositivos; backup e rollback verificados; zero dependência Google após o corte.
+- **Critérios de sucesso — Confirmados:** dados oficiais e manuais preservados; importação atômica, auditável e reversível; PWA responsivo; salvamentos idempotentes e não bloqueantes; sincronização entre dispositivos; backup local criptografado e rollback verificados; Google limitado à autenticação direta.
 
 ## Estado atual
+
+&gt; As linhas desta seção registradas antes de 28/09/2026 que citem R2, cron, Cloudflare Access, Zero Trust ou `Cf-Access-Jwt-Assertion` foram substituídas pela decisão vigente do resumo executivo. Elas são histórico, não instrução operacional.
+
+| Item | Estado vigente em 28/09/2026 |
+|---|---|
+| Backend e banco | Worker + D1, sem R2. A carga inicial do D1 continua válida. |
+| Autenticação | Google OAuth direto, PKCE e cookie de sessão assinado; allowlist de dois e-mails. Não usar Cloudflare Access. |
+| Backup | Ação manual do PWA, cifrada localmente com senha; recuperação local gera SQL e só aplica com `--confirm-database xsteam-gestao`. |
+| Assets | PWA e Chart.js são assets locais do Worker, também cacheados pelo service worker. |
+| Publicação | Código pronto para deploy após criação manual dos três secrets Google/sessão. A versão legada continua ativa até a validação. |
 
 | Item | Estado e evidência |
 |---|---|
@@ -96,25 +105,25 @@ GitHub Pages / PWA → Worker proxy público ───┘
 - O Apps Script importa quatro relatórios, persiste dados no Sheets, monta o bootstrap e grava perfis/Fluxo.
 - Essa arquitetura continua sendo a referência operacional até aprovação explícita do corte.
 
-### Arquitetura-alvo — decisão registrada
+### Arquitetura-alvo — decisão registrada (substitui menções anteriores a R2 e Access)
 
 ```text
 Usuário único
   │ login Google
   ▼
-Cloudflare Access — allowlist de duas contas do proprietário
+OAuth Google direto + cookie de sessão — allowlist de duas contas do proprietário
   ▼
 Worker xsteam-gestao / workers.dev
   ├── Static Assets: PWA
-  ├── /api: bootstrap, versão, mutações, análises e importação
-  ├── D1: fonte relacional única e auditoria
-  └── R2: arquivos brutos, relatórios e backups
+  ├── /api: bootstrap, versão, mutações e análises
+  └── D1: fonte relacional única e auditoria
 ```
 
 - GitHub permanece somente como repositório versionado depois da estabilização.
 - Não haverá domínio próprio nesta fase.
 - O objetivo é permanecer nas franquias gratuitas; nenhuma ativação paga é autorizada automaticamente.
 - Google Sheets, Drive e Apps Script permanecem intactos até o corte e depois viram contingência congelada, sem exclusão automática.
+- A senha do backup não é enviada ao Worker; o arquivo fica no dispositivo e a recuperação exige confirmação explícita do D1.
 
 ## Funcionalidades e evolução
 

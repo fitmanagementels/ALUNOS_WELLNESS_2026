@@ -48,6 +48,7 @@ test('callback permitido cria sessão; e-mail externo é bloqueado', async () =>
   assert.equal(callback.status, 302);
   assert.equal(callback.headers.get('location'), '/');
   assert.match(callback.headers.get('set-cookie'), /xsteam_session=/);
+  assert.match(callback.headers.get('set-cookie'), /xsteam_oauth=;/);
 
   await assert.rejects(() => finishGoogleLogin(request, env, {
     ...deps,

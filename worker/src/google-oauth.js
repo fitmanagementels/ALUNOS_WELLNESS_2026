@@ -65,7 +65,10 @@ export async function finishGoogleLogin(request, env, deps = {}) {
     if (payload.nonce !== oauth.nonce || payload.email_verified !== true) throw authError('AUTH_INVALID', 'Não foi possível validar o acesso.', 401);
     if (!allowedEmails(env.ALLOWED_EMAILS).includes(email)) throw authError('FORBIDDEN_EMAIL', 'Conta sem acesso.', 403);
     const session = await sign({ email }, env.SESSION_SECRET, '8h');
-    return new Response(null, { status: 302, headers: { location: '/', 'set-cookie': `${cookie('xsteam_session', session, 28800)}, ${clearCookie('xsteam_oauth')}`, 'cache-control': 'no-store' } });
+    const headers = new Headers({ location: '/', 'cache-control': 'no-store' });
+    headers.append('set-cookie', cookie('xsteam_session', session, 28800));
+    headers.append('set-cookie', clearCookie('xsteam_oauth'));
+    return new Response(null, { status: 302, headers });
   } catch (error) {
     if (error && (error.code === 'FORBIDDEN_EMAIL' || error.code === 'AUTH_INVALID')) throw error;
     throw authError('AUTH_INVALID', 'Não foi possível validar o acesso.', 401);

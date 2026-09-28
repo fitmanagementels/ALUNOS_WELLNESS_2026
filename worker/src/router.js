@@ -6,6 +6,7 @@ import { buildLocalBackup as buildDashboardLocalBackup } from './services/local-
 import { apiError, json } from './http.js';
 
 const MAX_JSON_BYTES = 1024 * 1024;
+const MAX_BACKUP_BYTES = 8 * 1024 * 1024;
 
 function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -65,6 +66,9 @@ export async function handleApiRequest(request, env, deps = {}, context) {
     }
     if (action === 'exportBackup') {
       const data = await buildLocalBackup(env.DB);
+      if (new TextEncoder().encode(JSON.stringify(data)).byteLength > MAX_BACKUP_BYTES) {
+        throw Object.assign(new Error('Backup excede o limite permitido.'), { code: 'BACKUP_TOO_LARGE' });
+      }
       return json({ ok: true, data });
     }
     return apiError('VALIDATION_ERROR', 'Ação inválida.', 400);

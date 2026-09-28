@@ -68,7 +68,8 @@ test('PWA carrega a fila persistente antes do dashboard e o dashboard a usa para
   const fs = require('node:fs');
   const html = fs.readFileSync('pwa/index.html', 'utf8');
   const dashboard = fs.readFileSync('pwa/js/dashboard.js', 'utf8');
-  assert.match(html, /<script src="\.\/js\/sync-queue\.js"><\/script><script src="\.\/js\/student-profiles\.js">/);
+  assert.match(html, /<script src="\.\/js\/sync-queue\.js"><\/script>/);
+  assert.match(html, /<script src="\.\/js\/sync-queue\.js">[\s\S]*<script src="\.\/js\/student-profiles\.js">/);
   assert.match(dashboard, /XsteamSync\.createSyncQueue/);
   assert.match(dashboard, /syncQueue\.enqueue\(\[patch\]\)/);
   assert.doesNotMatch(dashboard, /state\.failedMutations/);

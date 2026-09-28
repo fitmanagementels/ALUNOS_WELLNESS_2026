@@ -19,3 +19,14 @@ test('exportBackup exige sessão e não registra linhas pessoais', async () => {
   const response = await handleApiRequest(request, { DB: {} }, { authenticate: async () => ({ email: 'fitmanagement.els@gmail.com' }), buildLocalBackup: async () => ({ format: 'xsteam-local-backup', version: 1, tables: { students: [] } }) });
   assert.deepEqual(await response.json(), { ok: true, data: { format: 'xsteam-local-backup', version: 1, tables: { students: [] } } });
 });
+
+test('exportBackup recusa snapshot acima de 8 MiB sem expor o conteúdo', async () => {
+  const { handleApiRequest } = await import('../../worker/src/router.js');
+  const request = new Request('https://xsteam.example/api', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'exportBackup' }) });
+  const response = await handleApiRequest(request, { DB: {} }, {
+    authenticate: async () => ({ email: 'fitmanagement.els@gmail.com' }),
+    buildLocalBackup: async () => ({ format: 'xsteam-local-backup', version: 1, tables: { students: [{ name: 'Privado'.repeat(1500000) }] } })
+  });
+  assert.equal(response.status, 503);
+  assert.doesNotMatch(await response.text(), /Privado/);
+});

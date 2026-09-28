@@ -25,13 +25,8 @@ test('Worker não mascara falta de assets como acesso à API', async () => {
   assert.equal((await response.json()).error.code, 'ASSETS_UNAVAILABLE');
 });
 
-test('agendamento semanal envia a criação de backup para o contexto sem bloquear requisições', async () => {
+test('Worker não expõe agendamento de backup remoto após a adoção do backup local', async () => {
   const app = await worker();
-  let waited = false;
-  let received;
-  await app.handleScheduled({ scheduledTime: Date.parse('2026-09-28T06:00:00.000Z') }, { DB: {}, FILES: {} }, {
-    waitUntil(promise) { waited = true; return promise; }
-  }, { createBackup: async (db, files, now) => { received = { db, files, now: now.toISOString() }; } });
-  assert.equal(waited, true);
-  assert.deepEqual(received, { db: {}, files: {}, now: '2026-09-28T06:00:00.000Z' });
+  assert.equal(typeof app.handleScheduled, 'undefined');
+  assert.equal(typeof app.default.scheduled, 'undefined');
 });

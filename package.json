@@ -9,9 +9,11 @@
   "scripts": {
     "test": "node --test",
     "validate:real": "node scripts/validar-dados-reais.js",
-    "validate:permanence": "node scripts/validar-permanencia-real.js"
+    "validate:permanence": "node scripts/validar-permanencia-real.js",
+    "build:pwa-assets": "node scripts/build-pwa-assets.js"
   },
   "devDependencies": {
+    "chart.js": "^4.4.7",
     "xlsx": "0.18.5"
   }
 }

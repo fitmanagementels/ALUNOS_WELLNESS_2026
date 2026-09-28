@@ -42,13 +42,13 @@ const html = `<!doctype html>
   </style>
 </head>
 <body>
-  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 24/09/2026 12:05 · PWA operacional + dashboard · migração Cloudflare em desenvolvimento</p></div></header>
+  <header class="header"><div class="shell"><p class="eyebrow">XSTEAM · memória portátil canônica</p><h1>Contexto do Projeto</h1><p class="meta">Atualizado em 28/09/2026 · PWA operacional + dashboard · Cloudflare sem R2 ou Access</p></div></header>
   <main class="shell">
     <section class="cards" aria-label="Resumo rápido">
       <div class="card"><strong>Produção</strong><span>Arquitetura Google antiga permanece ativa e funcional.</span></div>
-      <div class="card"><strong>Marco revisto</strong><span>daf9cee · 231 testes locais aprovados.</span></div>
-      <div class="card"><strong>Cloudflare</strong><span>D1 populado; Worker, Access e R2 ainda não concluídos.</span></div>
-      <div class="card risk"><strong>Gate atual</strong><span>Habilitar R2 e configurar Access antes do deploy protegido.</span></div>
+      <div class="card"><strong>Marco revisto</strong><span>OAuth Google direto e backup local criptografado implementados.</span></div>
+      <div class="card"><strong>Cloudflare</strong><span>D1 populado; PWA e API serão servidos pelo Worker.</span></div>
+      <div class="card risk"><strong>Gate atual</strong><span>Criar os três secrets Google/sessão e validar o deploy.</span></div>
     </section>
     <section class="toolbar" aria-label="Ferramentas">
       <input id="search" class="search" type="search" placeholder="Buscar na memória" aria-label="Buscar na memória">
