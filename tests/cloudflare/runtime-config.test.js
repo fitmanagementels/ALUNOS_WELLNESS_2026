@@ -9,6 +9,7 @@ test('runtime Cloudflare usa assets e D1 sem R2 ou Cloudflare Access', () => {
   assert.match(config, /"directory"\s*:\s*"\.\.\/pwa"/);
   assert.match(config, /"binding"\s*:\s*"DB"/);
   assert.match(config, /"run_worker_first"\s*:\s*\[[^\]]*"\/auth\/\*"/);
+  assert.match(config, /"run_worker_first"\s*:\s*\[[^\]]*"\/"/);
   assert.doesNotMatch(config, /r2_buckets|"FILES"|"triggers"|"access"/);
   assert.doesNotMatch(config, /APPS_SCRIPT/);
   assert.match(ignore, /worker\/\.wrangler\//);
