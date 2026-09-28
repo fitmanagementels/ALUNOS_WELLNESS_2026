@@ -1,6 +1,7 @@
 import { apiError } from './http.js';
 import { handleApiRequest } from './router.js';
 import { startGoogleLogin, finishGoogleLogin, logout } from './google-oauth.js';
+import { readCookie } from './auth.js';
 
 export async function handleRequest(request, env, context, deps = {}) {
   const pathname = new URL(request.url).pathname;
@@ -11,6 +12,9 @@ export async function handleRequest(request, env, context, deps = {}) {
     if (pathname === '/auth/logout') return request.method === 'POST' ? await (deps.logout || logout)(request, env, deps) : apiError('METHOD_NOT_ALLOWED', 'Use POST.', 405);
   } catch (error) { return authFailure(error); }
   if (pathname.startsWith('/auth/')) return apiError('NOT_FOUND', 'Rota não encontrada.', 404);
+  if (pathname === '/' && !readCookie(request.headers.get('cookie'), 'xsteam_session')) {
+    return Response.redirect(new URL('/auth/login', request.url), 302);
+  }
   if (pathname === '/api') return handleApiRequest(request, env, deps, context);
   if (!env || !env.ASSETS || typeof env.ASSETS.fetch !== 'function') {
     return apiError('ASSETS_UNAVAILABLE', 'Aplicação indisponível.', 503);

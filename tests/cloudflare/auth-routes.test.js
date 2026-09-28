@@ -12,6 +12,15 @@ test('Worker expõe login, callback e logout antes de assets', async () => {
   assert.equal(logout.status, 204);
 });
 
+test('raiz sem sessão direciona ao login antes de carregar o PWA', async () => {
+  const { handleRequest } = await import('../../worker/src/index.js');
+  let assets = 0;
+  const response = await handleRequest(new Request('https://xsteam.example/'), { ASSETS: { fetch: async () => { assets += 1; return new Response('asset'); } } });
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get('location'), 'https://xsteam.example/auth/login');
+  assert.equal(assets, 0);
+});
+
 test('Worker não permite GET na API e não entrega asset para rota auth inválida', async () => {
   const { handleRequest } = await import('../../worker/src/index.js');
   let assets = 0;
