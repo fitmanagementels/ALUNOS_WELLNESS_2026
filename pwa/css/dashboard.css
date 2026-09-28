@@ -258,3 +258,13 @@ button.bar-row:hover { border-color: var(--line); color: var(--text); background
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 .settings-backup-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }.settings-backup-form label { display: grid; gap: 6px; color: var(--muted-strong); }
 @media (max-width: 720px) { .settings-backup-form { grid-template-columns: 1fr; }.settings-nav { grid-template-columns: repeat(4, minmax(112px, 1fr)); overflow-x: auto; } }
+/* Weekly import stays mounted while navigating between dashboard pages. */
+.upload-panel { min-width:0; padding:20px; }
+.upload-panel fieldset { border:1px solid #35413c; border-radius:12px; padding:16px; margin:16px 0; }
+.upload-panel label { display:block; margin:12px 0; }
+.upload-panel input { display:block; max-width:100%; margin-top:8px; }
+.upload-panel details { border-bottom:1px solid #35413c; padding:12px 0; overflow-wrap:anywhere; }
+.upload-panel details[open] { max-height:360px; overflow:auto; }
+.upload-panel summary { cursor:pointer; }
+.upload-panel button { margin:8px 8px 8px 0; }
+.upload-status { position:fixed; bottom:85px; right:16px; max-width:min(420px,90vw); padding:12px; border:1px solid #35413c; border-radius:12px; background:#111a16; color:#eef3ef; z-index:40; font-size:13px; }

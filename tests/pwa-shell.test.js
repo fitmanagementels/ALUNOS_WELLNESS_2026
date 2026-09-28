@@ -16,7 +16,8 @@ test('shell PWA inicia com sessão same-origin e possui manifesto e service work
   assert.equal(manifest.display, 'standalone');
   assert.equal(manifest.icons[0].src, './assets/xsteam-gestao-icon.svg');
   assert.match(appIcon, /data-variant="gestao"/);
-  assert.match(worker, /xsteam-static-v16/);
+  assert.match(worker, /xsteam-static-v17/);
+  assert.match(worker, /\.\/js\/import-reader\.mjs/);
   assert.match(worker, /\.\/css\/student-profiles\.css/);
   assert.match(worker, /\.\/css\/permanencia\.css/);
   assert.match(worker, /\.\/js\/student-profiles\.js/);

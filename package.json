@@ -4,7 +4,7 @@
   "private": true,
   "description": "Backend Apps Script para importar relatórios TecnoFit no Google Sheets",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "test": "node --test",

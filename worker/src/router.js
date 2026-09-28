@@ -4,6 +4,7 @@ import { saveMutations as saveDashboardMutations } from './services/mutation-ser
 import { analyzeChurn as analyzeDashboardChurn } from './services/churn-analysis-service.js';
 import { buildLocalBackup as buildDashboardLocalBackup } from './services/local-backup-service.js';
 import { apiError, json } from './http.js';
+import { importAction } from './services/import-service.js';
 
 const MAX_JSON_BYTES = 1024 * 1024;
 const MAX_BACKUP_BYTES = 8 * 1024 * 1024;
@@ -48,6 +49,9 @@ export async function handleApiRequest(request, env, deps = {}, context) {
   const buildLocalBackup = deps.buildLocalBackup || buildDashboardLocalBackup;
 
   try {
+    if (['importStart','importChunk','importPreview','importBackup','importConfirm','importHistory'].includes(action)) {
+      return json({ ok: true, data: await importAction(env.DB, actor, action, payload) });
+    }
     if (action === 'bootstrap') {
       const data = await buildBootstrap(env.DB);
       return json({ ok: true, data, meta: { versao: data.versao } });
@@ -73,6 +77,7 @@ export async function handleApiRequest(request, env, deps = {}, context) {
     }
     return apiError('VALIDATION_ERROR', 'Ação inválida.', 400);
   } catch (error) {
+    if (error && error.code === 'IMPORT_VALIDATION') return apiError(error.code, error.message, 400);
     console.error({ event: 'dashboard_api_error', action, code: error && error.code || 'INTERNAL_ERROR' });
     return apiError('SERVICE_UNAVAILABLE', 'Serviço indisponível.', 503);
   }

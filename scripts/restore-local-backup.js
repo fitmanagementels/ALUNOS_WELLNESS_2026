@@ -8,7 +8,7 @@ const BACKUP_TABLES = Object.freeze([
   'permanence_events', 'student_profiles', 'student_last_teachers', 'tag_groups',
   'tags', 'student_tags', 'leads', 'churns', 'new_students', 'settings',
   'import_batches', 'import_files', 'import_rows', 'import_errors', 'mutation_log',
-  'data_versions', 'usage_counters'
+  'data_versions', 'usage_counters', 'profile_catalog', 'weekly_uploads', 'weekly_upload_chunks'
 ]);
 const TARGET_DATABASE = 'xsteam-gestao';
 const REPOSITORY_ROOT = path.resolve(__dirname, '..');

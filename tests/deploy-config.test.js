@@ -22,10 +22,13 @@ test('workflows publicam Pages e Worker sem OAuth público', () => {
   assert.doesNotMatch(pages, /if:\s*\$\{\{\s*vars\.PUBLIC_WORKER_URL\s*!=\s*''\s*\}\}/);
   assert.doesNotMatch(pages, /PUBLIC_OAUTH_CLIENT_ID|PUBLIC_OAUTH_SCOPES/);
   assert.match(worker, /cloudflare\/wrangler-action@v3/);
-  assert.match(worker, /APPS_SCRIPT_SHARED_SECRET/);
-  assert.match(worker, /name: Criar ou atualizar o Worker/);
-  assert.match(worker, /name: Enviar segredos do Worker/);
-  assert.match(worker, /wranglerVersion: "4"/);
+  assert.doesNotMatch(worker, /APPS_SCRIPT_SHARED_SECRET/);
+  assert.match(worker, /d1 migrations apply xsteam-gestao --remote/);
+  assert.match(worker, /deploy --keep-vars/);
+  assert.match(worker, /node-version: 24/);
+  assert.match(worker, /npm test/);
+  assert.match(worker, /'pwa\/\*\*'/);
+  assert.match(pages, /ENABLE_LEGACY_PAGES_DEPLOY/);
   assert.match(worker, /vars\.ENABLE_WORKER_DEPLOY\s*==\s*'true'/);
   assert.match(gas, /clasp push --force/);
   assert.doesNotMatch(gas, /APPS_SCRIPT_AUTODEPLOY/);

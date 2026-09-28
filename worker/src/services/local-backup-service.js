@@ -2,7 +2,8 @@ export const LOCAL_BACKUP_TABLES = Object.freeze([
   'students', 'contracts', 'prescriptions', 'assessments', 'permanence', 'permanence_events',
   'student_profiles', 'student_last_teachers', 'tag_groups', 'tags', 'student_tags', 'leads',
   'churns', 'new_students', 'settings', 'import_batches', 'import_files', 'import_rows',
-  'import_errors', 'mutation_log', 'data_versions', 'usage_counters'
+  'import_errors', 'mutation_log', 'data_versions', 'usage_counters', 'profile_catalog',
+  'weekly_uploads', 'weekly_upload_chunks'
 ]);
 
 async function readTable(db, table) {

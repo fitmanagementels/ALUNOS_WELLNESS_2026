@@ -6,6 +6,10 @@ Evidência do perfil: `pwa/`, fluxo de perfis/Leads/Churns, dashboards financeir
 
 > Memória portátil canônica para humanos e IAs. Planilhas reais, tokens, secrets, bancos exportados e credenciais não devem ser versionados. Os dois e-mails operacionais da allowlist aparecem em configuração, testes e documentação e devem ser tratados como dados pessoais ao compartilhar o projeto externamente.
 
+## Upload semanal — atualização de 28/09/2026
+
+Implementado upload dos quatro relatórios TecnoFit em Configurações → Importar dados, com preparação no D1, prévia, backup criptografado e confirmação transacional. Sem R2/Drive no novo fluxo. Consulte `docs/operacao/UPLOAD_SEMANAL_PWA.md`. A confirmação dos arquivos reais fica a cargo do usuário na prévia. A migração aditiva `0005_weekly_upload.sql` foi aplicada no D1 remoto; a seção histórica abaixo descreve a carga inicial anterior.
+
 ## Resumo executivo — decisão vigente em 28/09/2026
 
 - O XSTEAM Gestão consolida alunos, contratos, vencimentos, prescrições, avaliações, permanência, perfis, Leads e Churns da XSTEAM Wellness Club.

@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   deploy:
+    if: ${{ vars.ENABLE_LEGACY_PAGES_DEPLOY == 'true' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -26,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm test

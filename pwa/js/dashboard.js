@@ -576,7 +576,7 @@
   function renderSettings() {
     var shell = el('div', 'settings-shell'), nav = el('nav', 'settings-nav'), content = el('div', 'settings-content');
     nav.setAttribute('aria-label', 'Áreas de configuração');
-    [['alertas', 'Prazos das fichas'], ['home', 'Prioridades da Home'], ['pagamentos', 'Perfil de pagamento'], ['backup', 'Segurança e backup']].forEach(function (item) {
+    [['alertas', 'Prazos das fichas'], ['home', 'Prioridades da Home'], ['pagamentos', 'Perfil de pagamento'], ['importar', 'Importar dados'], ['backup', 'Segurança e backup']].forEach(function (item) {
       var button = el('button', state.settingsSection === item[0] ? 'active' : '', item[1]);
       button.type = 'button';
       button.addEventListener('click', function () { state.settingsSection = item[0]; render(); });
@@ -585,6 +585,7 @@
     if (state.settingsSection === 'home') content.appendChild(renderHomeSettings());
     else if (state.settingsSection === 'pagamentos') content.appendChild(renderPaymentSettings());
     else if (state.settingsSection === 'backup') content.appendChild(renderBackupSettings());
+    else if (state.settingsSection === 'importar') content.appendChild(window.XsteamImport.render());
     else content.appendChild(renderAlertSettings());
     shell.appendChild(nav); shell.appendChild(content);
     return [shell];
@@ -703,6 +704,7 @@
       call('obterVersaoDashboard').then(function(versao){if(state.bootstrap&&versao.versao!==state.bootstrap.versao)return call('obterBootstrapDashboard');}).then(function(atualizado){if(atualizado)applyBootstrap(atualizado);}).catch(function(){});
     },1200);
   }
+  window.addEventListener('xsteam-import-complete', agendarSincronizacaoDeFundo);
   function agendarReenvioDaFila() { clearTimeout(state.syncRetryTimer);state.syncRetryTimer=setTimeout(function(){if(state.syncQueue)state.syncQueue.flush().then(function(sent){if(!sent)agendarReenvioDaFila();});},1000); }
   function prepararFilaDeSincronizacao() {
     state.syncQueue=XsteamSync.createSyncQueue({send:function(item){return call('salvarMutacoesDashboard',{requestId:item.requestId,patches:item.patches}).then(function(response){if(item.patches.some(function(patch){return patch.tipo==='fluxoChurn'||patch.tipo==='excluirFluxoChurn';}))state.churnAnalyticsCache=Object.create(null);agendarSincronizacaoDeFundo();return response;});}});
