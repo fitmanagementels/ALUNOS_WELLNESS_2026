@@ -27,8 +27,8 @@ Não envie nenhum segredo pelo chat, GitHub ou e-mail. Faça estas ações no pa
 ### 1. Criar o cliente OAuth no Google Cloud
 
 1. Entre em [Google Cloud Console](https://console.cloud.google.com/) com a conta que controla o projeto.
-2. Crie ou selecione um projeto, configure a tela de consentimento OAuth como **External** e publique-a em modo de teste/produção conforme o próprio painel orientar.
-3. Em **APIs e serviços > Credenciais**, crie **ID do cliente OAuth > Aplicativo da Web**.
+2. Crie ou selecione um projeto e, em **Google Auth Platform**, conclua o registro/tela de consentimento do aplicativo como **External** conforme o próprio painel orientar.
+3. Em **Google Auth Platform > Clients**, clique em **Create client**, escolha **Web application** e dê um nome como `XSTEAM Gestão`.
 4. Em **Origens JavaScript autorizadas**, inclua exatamente:
 
    `https://xsteam-gestao.fitmanagement-els.workers.dev`
