@@ -20,6 +20,9 @@
     var body;
     try { body = await response.json(); } catch (_) { body = {}; }
     if (!response.ok || body.ok !== true) {
+      if (body && body.error && body.error.code === 'AUTH_REQUIRED') {
+        window.location.assign('/auth/login');
+      }
       throw error(
         body && body.error && body.error.message || 'Não foi possível comunicar com o dashboard.',
         body && body.error && body.error.code

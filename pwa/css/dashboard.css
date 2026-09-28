@@ -256,3 +256,5 @@ button.bar-row:hover { border-color: var(--line); color: var(--text); background
 @media (max-width: 520px) { .home-queue-head { align-items: flex-start; flex-direction: column; }.home-queue-head .primary, .home-queue-head .secondary { width: 100%; }.financial-home-summary { grid-template-columns: 1fr; } }
 @media (max-width: 520px) { .follow-row { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }.follow-row .chip { justify-self: end; }.follow-days { color: var(--muted); }.follow-row .secondary { grid-column: 1 / -1; width: 100%; }.follow-identity strong { white-space: normal; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+.settings-backup-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }.settings-backup-form label { display: grid; gap: 6px; color: var(--muted-strong); }
+@media (max-width: 720px) { .settings-backup-form { grid-template-columns: 1fr; }.settings-nav { grid-template-columns: repeat(4, minmax(112px, 1fr)); overflow-x: auto; } }

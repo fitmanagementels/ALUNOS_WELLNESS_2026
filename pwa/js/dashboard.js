@@ -543,10 +543,40 @@
     panel.appendChild(list);
     return panel;
   }
+  function renderBackupSettings() {
+    var panel = section('Segurança e backup'), form = el('div', 'settings-backup-form'), password = el('input'), confirmation = el('input'), message = el('p', 'form-message'), last = localStorage.getItem('xsteam-last-local-backup-at');
+    panel.classList.add('settings-panel');
+    panel.appendChild(el('p', 'body-copy', 'Gere uma cópia criptografada da base neste dispositivo. Guarde o arquivo e a senha em locais separados, fora do GitHub.'));
+    [[password, 'Senha do backup'], [confirmation, 'Confirmar senha']].forEach(function (item) {
+      var field = el('label'), caption = el('span', 'field-label', item[1]);
+      item[0].type = 'password'; item[0].autocomplete = 'new-password'; item[0].minLength = 12; item[0].required = true;
+      field.appendChild(caption); field.appendChild(item[0]); form.appendChild(field);
+    });
+    panel.appendChild(form);
+    panel.appendChild(el('p', 'body-copy', last ? 'Último backup gerado neste dispositivo: ' + new Date(last).toLocaleString('pt-BR') : 'Nenhum backup gerado neste dispositivo.'));
+    var save = el('button', 'primary', 'Gerar backup criptografado');
+    save.type = 'button';
+    save.addEventListener('click', async function () {
+      try {
+        window.XsteamLocalBackup.validatePasswordPair(password.value, confirmation.value);
+        save.disabled = true; save.textContent = 'Gerando backup…'; message.textContent = '';
+        var snapshot = await window.XsteamApi.call('exportBackup');
+        var file = await window.XsteamLocalBackup.createEncryptedFile(snapshot, password.value);
+        var now = new Date();
+        window.XsteamLocalBackup.download(file, 'xsteam-backup-' + now.toISOString().slice(0, 10) + '.xsteam-backup');
+        localStorage.setItem('xsteam-last-local-backup-at', now.toISOString());
+        password.value = ''; confirmation.value = ''; message.textContent = 'Backup criptografado baixado. Guarde o arquivo e a senha em locais separados.';
+        render();
+      } catch (error) { message.textContent = error && error.message || 'Não foi possível gerar o backup.'; }
+      finally { save.disabled = false; save.textContent = 'Gerar backup criptografado'; }
+    });
+    panel.appendChild(message); panel.appendChild(save);
+    return panel;
+  }
   function renderSettings() {
     var shell = el('div', 'settings-shell'), nav = el('nav', 'settings-nav'), content = el('div', 'settings-content');
     nav.setAttribute('aria-label', 'Áreas de configuração');
-    [['alertas', 'Prazos das fichas'], ['home', 'Prioridades da Home'], ['pagamentos', 'Perfil de pagamento']].forEach(function (item) {
+    [['alertas', 'Prazos das fichas'], ['home', 'Prioridades da Home'], ['pagamentos', 'Perfil de pagamento'], ['backup', 'Segurança e backup']].forEach(function (item) {
       var button = el('button', state.settingsSection === item[0] ? 'active' : '', item[1]);
       button.type = 'button';
       button.addEventListener('click', function () { state.settingsSection = item[0]; render(); });
@@ -554,6 +584,7 @@
     });
     if (state.settingsSection === 'home') content.appendChild(renderHomeSettings());
     else if (state.settingsSection === 'pagamentos') content.appendChild(renderPaymentSettings());
+    else if (state.settingsSection === 'backup') content.appendChild(renderBackupSettings());
     else content.appendChild(renderAlertSettings());
     shell.appendChild(nav); shell.appendChild(content);
     return [shell];
