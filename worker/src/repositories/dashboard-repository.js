@@ -16,7 +16,7 @@ export async function readDashboard(db) {
     all(db, 'SELECT student_id, responsible_teacher, payment_profile, payment_notes, general_notes, updated_at FROM student_profiles'),
     all(db, 'SELECT student_id, teacher_name, position FROM student_last_teachers ORDER BY student_id, position'),
     all(db, 'SELECT type, group_key, catalog_key, title, active, position FROM profile_catalog ORDER BY type, group_key, position, title'),
-    all(db, 'SELECT student_id, group_key, title FROM student_tags ORDER BY student_id, group_key, title'),
+    all(db, 'SELECT st.student_id, t.group_key, t.title FROM student_tags st JOIN tags t ON t.tag_key = st.tag_key ORDER BY st.student_id, t.group_key, t.title'),
     all(db, 'SELECT lead_id, name, phone, origin, referral, first_contact_on, trial_on, trial_teacher, became_customer_on, status, contracted_plan, package_value_cents, sales_report, created_at, updated_at FROM leads WHERE archived_at IS NULL'),
     all(db, 'SELECT churn_id, student_id, official_name, official_phone, official_exit_on, responsible_professional, last_teacher, manual_exit_reason, manual_context, manual_retention_action, created_at, updated_at FROM churns WHERE archived_at IS NULL'),
     all(db, 'SELECT entry_id, student_id, official_name, official_phone, official_entry_on, official_contract, official_value_cents FROM new_students'),

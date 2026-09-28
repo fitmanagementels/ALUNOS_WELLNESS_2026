@@ -39,3 +39,9 @@ test('bootstrap D1 preserva o contrato consumido pelo PWA', async () => {
   assert.equal(response.catalogoPerfisAlunos[0].titulo, 'Coach');
   assert.deepEqual(response.fluxo, { leads: [], churns: [], novos: [{ id: 'new-99', alunoId: '99', nome: 'ALUNO NOVO', telefone: '', dataEntrada: '10/09/2026', contrato: '2X', valor: 700 }] });
 });
+
+test('consulta de etiquetas do bootstrap junta student_tags com tags', () => {
+  const fs = require('node:fs');
+  const repository = fs.readFileSync('worker/src/repositories/dashboard-repository.js', 'utf8');
+  assert.match(repository, /SELECT st\.student_id, t\.group_key, t\.title FROM student_tags st JOIN tags t ON t\.tag_key = st\.tag_key/i);
+});
