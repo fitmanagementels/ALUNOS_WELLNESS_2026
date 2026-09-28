@@ -2,47 +2,29 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const env = {
-  ACCESS_TEAM_DOMAIN: 'xsteam.cloudflareaccess.com',
-  ACCESS_AUD: 'xsteam-gestao',
+  SESSION_SECRET: 'session-secret-for-tests-only',
   ALLOWED_EMAILS: 'fitmanagement.els@gmail.com,elohimlima15@gmail.com'
 };
 
 function request(token = 'token-valido') {
   return new Request('https://xsteam-gestao.example/api', {
-    headers: { 'Cf-Access-Jwt-Assertion': token }
+    headers: { cookie: `xsteam_session=${token}` }
   });
 }
 
-test('autentica somente e-mail permitido pelo JWT do Access', async () => {
+test('autentica somente e-mail permitido por sessão assinada', async () => {
   const { authenticate } = await import('../../worker/src/auth.js');
   const identity = await authenticate(request(), env, {
-    createRemoteJWKSet: (url) => ({ url: String(url) }),
-    jwtVerify: async (_token, jwks, options) => {
-      assert.equal(jwks.url, 'https://xsteam.cloudflareaccess.com/cdn-cgi/access/certs');
-      assert.deepEqual(options, {
-        issuer: 'https://xsteam.cloudflareaccess.com',
-        audience: 'xsteam-gestao'
-      });
-      return { payload: { email: 'ELOHIMLIMA15@GMAIL.COM' } };
+    jwtVerify: async (_token, secret, options) => {
+      assert.ok(secret instanceof Uint8Array);
+      assert.equal(options.algorithms[0], 'HS256');
+      return { payload: { email: 'ELOHIMLIMA15@GMAIL.COM', exp: Math.floor(Date.now() / 1000) + 60 } };
     }
   });
   assert.deepEqual(identity, { email: 'elohimlima15@gmail.com' });
 });
 
-test('usa a identidade já validada pelo Access do Worker sem exigir variáveis de JWT', async () => {
-  const { authenticate } = await import('../../worker/src/auth.js');
-  const identity = await authenticate(new Request('https://xsteam-gestao.example/api'), {
-    ALLOWED_EMAILS: 'fitmanagement.els@gmail.com,elohimlima15@gmail.com'
-  }, {}, {
-    access: {
-      aud: 'worker-audience',
-      getIdentity: async () => ({ email: 'fitmanagement.els@gmail.com' })
-    }
-  });
-  assert.deepEqual(identity, { email: 'fitmanagement.els@gmail.com' });
-});
-
-test('rejeita requisição sem JWT, JWT inválido e e-mail externo', async () => {
+test('rejeita requisição sem sessão, sessão inválida e e-mail externo', async () => {
   const { authenticate } = await import('../../worker/src/auth.js');
   await assert.rejects(
     () => authenticate(new Request('https://xsteam-gestao.example/api'), env),
@@ -50,14 +32,12 @@ test('rejeita requisição sem JWT, JWT inválido e e-mail externo', async () =>
   );
   await assert.rejects(
     () => authenticate(request(), env, {
-      createRemoteJWKSet: () => ({}),
       jwtVerify: async () => { throw new Error('assinatura inválida'); }
     }),
     { code: 'AUTH_INVALID', status: 401 }
   );
   await assert.rejects(
     () => authenticate(request(), env, {
-      createRemoteJWKSet: () => ({}),
       jwtVerify: async () => ({ payload: { email: 'fora@example.com' } })
     }),
     { code: 'FORBIDDEN_EMAIL', status: 403 }
